@@ -14,7 +14,204 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      meals: {
+        Row: {
+          calories: number
+          carbs: number | null
+          created_at: string
+          fat: number | null
+          fiber: number | null
+          id: string
+          logged_at: string
+          meal_type: string | null
+          name: string
+          protein: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          calories: number
+          carbs?: number | null
+          created_at?: string
+          fat?: number | null
+          fiber?: number | null
+          id?: string
+          logged_at?: string
+          meal_type?: string | null
+          name: string
+          protein?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          carbs?: number | null
+          created_at?: string
+          fat?: number | null
+          fiber?: number | null
+          id?: string
+          logged_at?: string
+          meal_type?: string | null
+          name?: string
+          protein?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      meditation_sessions: {
+        Row: {
+          created_at: string
+          duration_minutes: number
+          id: string
+          logged_at: string
+          notes: string | null
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes: number
+          id?: string
+          logged_at?: string
+          notes?: string | null
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          logged_at?: string
+          notes?: string | null
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          bmi: number | null
+          bmr: number | null
+          created_at: string
+          daily_calorie_goal: number | null
+          daily_meditation_goal: number | null
+          daily_water_goal: number | null
+          display_name: string | null
+          gender: string | null
+          goal: string | null
+          height: number | null
+          id: string
+          tdee: number | null
+          updated_at: string
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          bmi?: number | null
+          bmr?: number | null
+          created_at?: string
+          daily_calorie_goal?: number | null
+          daily_meditation_goal?: number | null
+          daily_water_goal?: number | null
+          display_name?: string | null
+          gender?: string | null
+          goal?: string | null
+          height?: number | null
+          id?: string
+          tdee?: number | null
+          updated_at?: string
+          user_id: string
+          weight?: number | null
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          bmi?: number | null
+          bmr?: number | null
+          created_at?: string
+          daily_calorie_goal?: number | null
+          daily_meditation_goal?: number | null
+          daily_water_goal?: number | null
+          display_name?: string | null
+          gender?: string | null
+          goal?: string | null
+          height?: number | null
+          id?: string
+          tdee?: number | null
+          updated_at?: string
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      water_intake: {
+        Row: {
+          created_at: string
+          glasses: number
+          id: string
+          logged_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          glasses?: number
+          id?: string
+          logged_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          glasses?: number
+          id?: string
+          logged_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      workouts: {
+        Row: {
+          calories_burned: number
+          created_at: string
+          duration_minutes: number
+          id: string
+          logged_at: string
+          name: string
+          notes: string | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          calories_burned: number
+          created_at?: string
+          duration_minutes: number
+          id?: string
+          logged_at?: string
+          name: string
+          notes?: string | null
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          calories_burned?: number
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          logged_at?: string
+          name?: string
+          notes?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
