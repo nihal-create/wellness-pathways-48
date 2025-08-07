@@ -43,44 +43,44 @@ export function TrackerCard({
   return (
     <Card 
       className={cn(
-        "p-4 shadow-card transition-gentle hover:shadow-elevated",
+        "p-3 md:p-4 shadow-card transition-gentle hover:shadow-elevated",
         colorClasses[color],
         className
       )}
       style={style}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="p-2 rounded-full bg-card/60 shadow-soft">
+      <div className="flex items-start justify-between mb-2 md:mb-3">
+        <div className="p-1.5 md:p-2 rounded-full bg-card/60 shadow-soft">
           {icon}
         </div>
         <div className="text-right">
-          <p className="text-xl font-bold text-foreground">{current}</p>
+          <p className="text-lg md:text-xl font-bold text-foreground">{current}</p>
           <p className="text-xs text-muted-foreground">/ {goal} {unit}</p>
         </div>
       </div>
       
-      <h3 className="font-semibold text-foreground mb-3 text-sm">{title}</h3>
+      <h3 className="font-semibold text-foreground mb-2 md:mb-3 text-xs md:text-sm">{title}</h3>
       
-      <div className="space-y-3">
+      <div className="space-y-2 md:space-y-3">
         <Progress 
           value={percentage} 
-          className="h-2 bg-card/60"
+          className="h-1.5 md:h-2 bg-card/60"
         />
         <p className="text-xs text-muted-foreground text-center">
           {percentage.toFixed(0)}% complete
         </p>
         
         {/* Action buttons */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-1 md:pt-2">
           {addDialog}
           {summaryPath && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate(summaryPath)}
-              className="text-xs p-2"
+              className="text-xs p-1 md:p-2 h-6 md:h-8"
             >
-              <BarChart3 className="h-3 w-3" />
+              <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
           )}
         </div>

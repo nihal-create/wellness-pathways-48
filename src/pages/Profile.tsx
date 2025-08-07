@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
@@ -14,7 +14,7 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -134,6 +134,10 @@ export default function Profile() {
         description: "Your profile has been saved successfully.",
       });
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   if (profileLoading) {
@@ -310,10 +314,21 @@ export default function Profile() {
 
         <Separator />
 
-        <Button type="submit" disabled={loading} className="w-full">
-          <Save className="h-4 w-4 mr-2" />
-          {loading ? "Saving..." : "Save Profile"}
-        </Button>
+        <div className="flex flex-col md:flex-row gap-3">
+          <Button type="submit" disabled={loading} className="flex-1">
+            <Save className="h-4 w-4 mr-2" />
+            {loading ? "Saving..." : "Save Profile"}
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={handleSignOut}
+            className="flex-1 md:flex-none"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign Out
+          </Button>
+        </div>
       </form>
     </div>
   );

@@ -3,15 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Search } from 'lucide-react';
-import { workoutTypes, workoutCategories } from '@/data/workouts';
+import { workoutTypes } from '@/data/workouts';
 
 interface AddWorkoutDialogProps {
   onWorkoutAdded: () => void;
@@ -22,19 +20,15 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [workoutData, setWorkoutData] = useState({
     name: '',
     type: '',
-    duration_minutes: '',
-    notes: ''
+    duration_minutes: ''
   });
 
-  const filteredWorkouts = workoutTypes.filter(workout => {
-    const matchesSearch = workout.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || workout.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredWorkouts = workoutTypes.filter(workout =>
+    workout.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const selectedWorkout = workoutTypes.find(w => w.name === workoutData.type);
   const estimatedCalories = selectedWorkout && workoutData.duration_minutes 
@@ -55,7 +49,6 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
         type: workoutData.type,
         duration_minutes: parseInt(workoutData.duration_minutes),
         calories_burned: estimatedCalories,
-        notes: workoutData.notes || null,
         logged_at: new Date().toISOString()
       });
 
@@ -75,11 +68,9 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
       setWorkoutData({
         name: '',
         type: '',
-        duration_minutes: '',
-        notes: ''
+        duration_minutes: ''
       });
       setSearchQuery('');
-      setSelectedCategory('All');
       setOpen(false);
       onWorkoutAdded();
     }
@@ -88,46 +79,33 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="shadow-soft">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Workout
+        <Button size="sm" className="shadow-soft h-7 md:h-8 text-xs md:text-sm px-2 md:px-3">
+          <Plus className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+          <span className="hidden sm:inline">Add Workout</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Log New Workout</DialogTitle>
+      <DialogContent className="w-[95vw] max-w-2xl h-[90vh] md:h-auto max-h-[85vh] flex flex-col p-4 md:p-6">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-lg md:text-xl">Log New Workout</DialogTitle>
         </DialogHeader>
         
-        <div className="flex flex-col lg:flex-row gap-6 flex-1 overflow-hidden">
-          {/* Workout Selection */}
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className="space-y-4 mb-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search workouts..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {workoutCategories.map(category => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <div className="flex flex-col gap-4 md:gap-6 flex-1">
+          {/* Search Section */}
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search workouts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-2">
-              {filteredWorkouts.map(workout => (
+            {/* Workout Results */}
+            <div className="max-h-48 overflow-y-auto space-y-2">
+              {searchQuery && filteredWorkouts.map(workout => (
                 <Card 
                   key={workout.id} 
                   className={`cursor-pointer transition-colors ${
@@ -148,12 +126,22 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
                   </CardContent>
                 </Card>
               ))}
+              {searchQuery && filteredWorkouts.length === 0 && (
+                <p className="text-center text-muted-foreground py-4">
+                  No workouts found matching "{searchQuery}"
+                </p>
+              )}
+              {!searchQuery && (
+                <p className="text-center text-muted-foreground py-4">
+                  Start typing to search for workouts...
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Workout Details */}
-          <div className="lg:w-80 flex flex-col">
-            <form onSubmit={handleSubmit} className="space-y-4 flex-1">
+          {/* Workout Details Form */}
+          {workoutData.type && (
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="workout-name">Custom Name (optional)</Label>
                 <Input
@@ -186,7 +174,6 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
                 </Card>
               )}
 
-
               <div className="flex gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
                   Cancel
@@ -200,7 +187,7 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
                 </Button>
               </div>
             </form>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
