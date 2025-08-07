@@ -91,6 +91,14 @@ export function Dashboard() {
             <Button
               variant="ghost"
               size="sm"
+              onClick={() => navigate('/profile')}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleSignOut}
               className="text-muted-foreground hover:text-foreground"
             >
