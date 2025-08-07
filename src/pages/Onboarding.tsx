@@ -132,6 +132,8 @@ export default function Onboarding() {
         daily_calorie_goal: dailyCalorieGoal,
         daily_water_goal: 8,
         daily_meditation_goal: 20
+      }, {
+        onConflict: 'user_id'
       });
 
     setLoading(false);
