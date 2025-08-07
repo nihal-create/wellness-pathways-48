@@ -2,41 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Headspace-inspired Health Tracker Design System
+Soft, calming colors with warm oranges, gentle blues, and zen-like gradients
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Background Colors */
+    --background: 35 100% 98%;
+    --foreground: 220 15% 25%;
 
+    /* Card Colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 15% 25%;
 
+    /* Popover Colors */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 15% 25%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Headspace Orange */
+    --primary: 25 95% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-soft: 25 100% 95%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Calm Blue */
+    --secondary: 200 70% 92%;
+    --secondary-foreground: 200 25% 35%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted Colors */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Zen Green */
+    --accent: 150 40% 88%;
+    --accent-foreground: 150 25% 35%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Wellness Colors */
+    --wellness-meditation: 260 60% 85%;
+    --wellness-water: 200 80% 85%;
+    --wellness-nutrition: 80 60% 85%;
+    --wellness-fitness: 340 60% 85%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Destructive */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    /* Form Elements */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 25 95% 60%;
+
+    /* Radius for soft, rounded design */
+    --radius: 1rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(25 95% 60%), hsl(35 90% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(200 70% 92%), hsl(210 75% 88%));
+    --gradient-wellness: linear-gradient(135deg, hsl(150 40% 88%), hsl(160 45% 85%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 100% 95%), hsl(35 100% 92%));
+
+    /* Shadows for depth */
+    --shadow-soft: 0 4px 20px -2px hsl(25 95% 60% / 0.1);
+    --shadow-card: 0 2px 12px -1px hsl(220 15% 25% / 0.08);
+    --shadow-elevated: 0 8px 32px -4px hsl(25 95% 60% / 0.15);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-gentle: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
 
     --sidebar-background: 0 0% 98%;
 
