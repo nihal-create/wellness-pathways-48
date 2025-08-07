@@ -82,20 +82,32 @@ export function Dashboard() {
   const progress = calculateProgress();
 
   return (
-    <div className="min-h-screen bg-background p-4 animate-fade-in">
-      <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-background p-4 md:p-6 animate-fade-in">
+      <div className="max-w-lg md:max-w-7xl mx-auto">
         {/* Header with user controls */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 md:mb-8">
           <WelcomeHeader profile={profile} />
-          <div className="flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => navigate('/profile')}
-              className="text-muted-foreground hover:text-foreground"
+              className="shadow-soft"
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-4 w-4 mr-2" />
+              Profile
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSignOut}
+              className="shadow-soft"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+          <div className="md:hidden flex items-center space-x-2">
             <Button
               variant="ghost"
               size="sm"
@@ -107,7 +119,7 @@ export function Dashboard() {
           </div>
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {trackers.map((tracker, index) => (
             <TrackerCard
               key={tracker.title}
@@ -120,7 +132,7 @@ export function Dashboard() {
           ))}
         </div>
         
-        <div className="mt-8 p-4 bg-gradient-secondary rounded-2xl shadow-card">
+        <div className="mt-8 p-4 md:p-6 bg-gradient-secondary rounded-2xl shadow-card">
           <h3 className="font-semibold text-foreground mb-2">Today's Progress</h3>
           <p className="text-sm text-muted-foreground">
             You're {progress}% towards your daily goals. 

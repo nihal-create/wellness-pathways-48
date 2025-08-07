@@ -186,16 +186,6 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
                 </Card>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notes (optional)</Label>
-                <Textarea
-                  id="notes"
-                  value={workoutData.notes}
-                  onChange={(e) => setWorkoutData({ ...workoutData, notes: e.target.value })}
-                  placeholder="How did it feel? Any achievements?"
-                  rows={3}
-                />
-              </div>
 
               <div className="flex gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">

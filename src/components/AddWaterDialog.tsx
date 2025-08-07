@@ -51,16 +51,22 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
     }
   };
 
-  const quickAdd = async (glassCount: number) => {
-    if (!user) return;
+  const [selectedQuickAmount, setSelectedQuickAmount] = useState<number | null>(null);
+
+  const handleQuickAdd = async () => {
+    if (!user || !selectedQuickAmount) return;
+
+    setLoading(true);
 
     const { error } = await supabase
       .from('water_intake')
       .insert({
         user_id: user.id,
-        glasses: glassCount,
+        glasses: selectedQuickAmount,
         logged_at: new Date().toISOString()
       });
+
+    setLoading(false);
 
     if (error) {
       toast({
@@ -71,8 +77,10 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
     } else {
       toast({
         title: "Water logged!",
-        description: `${glassCount} glass${glassCount > 1 ? 'es' : ''} of water added.`,
+        description: `${selectedQuickAmount} glass${selectedQuickAmount > 1 ? 'es' : ''} of water added.`,
       });
+      setSelectedQuickAmount(null);
+      setOpen(false);
       onWaterAdded();
     }
   };
@@ -98,15 +106,24 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
               {[1, 2, 3, 4].map((count) => (
                 <Button
                   key={count}
-                  variant="outline"
+                  variant={selectedQuickAmount === count ? "default" : "outline"}
                   size="sm"
-                  onClick={() => quickAdd(count)}
+                  onClick={() => setSelectedQuickAmount(count)}
                   className="flex-1"
                 >
                   {count} glass{count > 1 ? 'es' : ''}
                 </Button>
               ))}
             </div>
+            {selectedQuickAmount && (
+              <Button 
+                onClick={handleQuickAdd}
+                disabled={loading}
+                className="w-full mt-3"
+              >
+                {loading ? "Adding..." : `Add ${selectedQuickAmount} glass${selectedQuickAmount > 1 ? 'es' : ''}`}
+              </Button>
+            )}
           </div>
           
           <div className="relative">
