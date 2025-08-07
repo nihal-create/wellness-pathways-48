@@ -109,9 +109,9 @@ export default function Onboarding() {
     
     // Set calorie goal based on goal
     let dailyCalorieGoal = Math.round(tdee);
-    if (profileData.goal === 'lose_weight') {
+    if (profileData.goal === 'lose') {
       dailyCalorieGoal -= 500; // 500 calorie deficit
-    } else if (profileData.goal === 'gain_weight') {
+    } else if (profileData.goal === 'gain') {
       dailyCalorieGoal += 300; // 300 calorie surplus
     }
 
@@ -282,9 +282,9 @@ export default function Onboarding() {
                   <SelectValue placeholder="Select your goal" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="lose_weight">Lose Weight</SelectItem>
-                  <SelectItem value="maintain_weight">Maintain Weight</SelectItem>
-                  <SelectItem value="gain_weight">Gain Weight</SelectItem>
+                  <SelectItem value="lose">Lose Weight</SelectItem>
+                  <SelectItem value="maintain">Maintain Weight</SelectItem>
+                  <SelectItem value="gain">Gain Weight</SelectItem>
                 </SelectContent>
               </Select>
             </div>
