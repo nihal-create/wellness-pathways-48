@@ -1,53 +1,103 @@
 import { TrackerCard } from "./TrackerCard";
 import { WelcomeHeader } from "./WelcomeHeader";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
+import { useTrackerData } from "@/hooks/useTrackerData";
+import { AddMealDialog } from "./AddMealDialog";
+import { AddWorkoutDialog } from "./AddWorkoutDialog";
+import { AddMeditationDialog } from "./AddMeditationDialog";
+import { AddWaterDialog } from "./AddWaterDialog";
 import { 
   Utensils, 
   Dumbbell, 
   Brain, 
-  Droplets 
+  Droplets,
+  LogOut,
+  BarChart3,
+  Settings
 } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
 export function Dashboard() {
-  // Mock data - in real app this would come from your state/API
+  const { user, signOut } = useAuth();
+  const { profile } = useProfile();
+  const { getTodayTotals, refetch } = useTrackerData();
+  const navigate = useNavigate();
+  
+  const totals = getTodayTotals();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   const trackers = [
     {
-      title: "Indian Meals",
-      current: 1850,
-      goal: 2200,
+      title: "Meals",
+      current: totals.calories,
+      goal: profile?.daily_calorie_goal || 2000,
       unit: "cal",
       icon: <Utensils className="h-6 w-6 text-orange-600" />,
-      color: 'nutrition' as const
+      color: 'nutrition' as const,
+      addDialog: <AddMealDialog onMealAdded={refetch} />,
+      summaryPath: '/meals'
     },
     {
       title: "Workouts",
-      current: 320,
+      current: totals.caloriesBurned,
       goal: 500,
       unit: "cal burned",
       icon: <Dumbbell className="h-6 w-6 text-pink-600" />,
-      color: 'fitness' as const
+      color: 'fitness' as const,
+      addDialog: <AddWorkoutDialog onWorkoutAdded={refetch} />,
+      summaryPath: '/workouts'
     },
     {
       title: "Meditation",
-      current: 15,
-      goal: 20,
+      current: totals.meditationMinutes,
+      goal: profile?.daily_meditation_goal || 20,
       unit: "minutes",
       icon: <Brain className="h-6 w-6 text-purple-600" />,
-      color: 'meditation' as const
+      color: 'meditation' as const,
+      addDialog: <AddMeditationDialog onMeditationAdded={refetch} />
     },
     {
       title: "Water Intake",
-      current: 6,
-      goal: 8,
+      current: totals.waterGlasses,
+      goal: profile?.daily_water_goal || 8,
       unit: "glasses",
       icon: <Droplets className="h-6 w-6 text-blue-600" />,
-      color: 'water' as const
+      color: 'water' as const,
+      addDialog: <AddWaterDialog onWaterAdded={refetch} />
     }
   ];
+
+  const calculateProgress = () => {
+    const totalProgress = trackers.reduce((sum, tracker) => {
+      return sum + Math.min((tracker.current / tracker.goal) * 100, 100);
+    }, 0);
+    return Math.round(totalProgress / trackers.length);
+  };
+
+  const progress = calculateProgress();
 
   return (
     <div className="min-h-screen bg-background p-4 animate-fade-in">
       <div className="max-w-lg mx-auto">
-        <WelcomeHeader />
+        {/* Header with user controls */}
+        <div className="flex items-center justify-between mb-6">
+          <WelcomeHeader profile={profile} />
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSignOut}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-2 gap-4">
           {trackers.map((tracker, index) => (
@@ -56,15 +106,17 @@ export function Dashboard() {
               {...tracker}
               className="animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` } as React.CSSProperties}
+              addDialog={tracker.addDialog}
+              summaryPath={tracker.summaryPath}
             />
           ))}
         </div>
         
         <div className="mt-8 p-4 bg-gradient-secondary rounded-2xl shadow-card">
-          <h3 className="font-semibold text-foreground mb-2">Today's Insight</h3>
+          <h3 className="font-semibold text-foreground mb-2">Today's Progress</h3>
           <p className="text-sm text-muted-foreground">
-            You're doing great! You're 78% towards your daily goals. 
-            Consider having a healthy snack and staying hydrated. 🌟
+            You're {progress}% towards your daily goals. 
+            {progress > 80 ? "Amazing work! Keep it up! 🌟" : progress > 50 ? "You're doing great! Stay consistent. 💪" : "Great start! Every step counts. 🚀"}
           </p>
         </div>
       </div>
