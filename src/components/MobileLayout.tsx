@@ -7,8 +7,8 @@ interface MobileLayoutProps {
 
 export function MobileLayout({ children }: MobileLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <main className="pb-20 md:pb-0">
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <main className="pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
         {children}
       </main>
       <BottomNavigation />

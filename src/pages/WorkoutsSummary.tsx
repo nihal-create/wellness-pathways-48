@@ -88,7 +88,7 @@ export default function WorkoutsSummary() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="bg-background p-4 overflow-x-hidden">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -135,7 +135,7 @@ export default function WorkoutsSummary() {
           <section aria-labelledby="workouts-list" className="space-y-4">
             <h2 id="workouts-list" className="sr-only">Logged Workouts</h2>
             {workouts.length === 0 ? (
-              <Card className="shadow-card">
+              <Card className="w-full shadow-card">
                 <CardContent className="p-8 text-center">
                   <Dumbbell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No workouts logged today</h3>
@@ -145,8 +145,8 @@ export default function WorkoutsSummary() {
               </Card>
             ) : (
               workouts.map((workout) => (
-                <Card key={workout.id} className="shadow-card">
-                  <CardContent className="p-4">
+                <Card key={workout.id} className="w-full shadow-card">
+                  <CardContent className="p-4 overflow-hidden">
                     <div className="flex items-center justify-between gap-4">
                       <div className="min-w-0 flex-1">
                         <p className="font-medium truncate">

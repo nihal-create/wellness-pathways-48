@@ -76,7 +76,7 @@ export function Dashboard() {
   const progress = calculateProgress();
 
   return (
-    <div className="min-h-screen bg-background px-3 py-4 md:px-6 md:py-8 animate-fade-in">
+    <div className="bg-background px-3 py-4 md:px-6 md:py-8 animate-fade-in overflow-x-hidden">
       <div className="max-w-sm md:max-w-7xl mx-auto">
         {/* Header - mobile optimized */}
         <div className="flex items-center justify-between mb-4 md:mb-8">

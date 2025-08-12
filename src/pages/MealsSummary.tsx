@@ -90,7 +90,7 @@ export default function MealsSummary() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="bg-background p-4 overflow-x-hidden">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -145,7 +145,7 @@ export default function MealsSummary() {
           <section aria-labelledby="meals-list" className="space-y-4">
             <h2 id="meals-list" className="sr-only">Logged Meals</h2>
             {meals.length === 0 ? (
-              <Card className="shadow-card">
+              <Card className="w-full shadow-card">
                 <CardContent className="p-8 text-center">
                   <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No meals logged today</h3>
@@ -155,8 +155,8 @@ export default function MealsSummary() {
               </Card>
             ) : (
               meals.map((meal) => (
-                <Card key={meal.id} className="shadow-card">
-                  <CardContent className="p-4">
+                <Card key={meal.id} className="w-full shadow-card">
+                  <CardContent className="p-4 overflow-hidden">
                     <div className="flex items-center justify-between gap-4">
                       <div className="min-w-0 flex-1">
                         <p className="font-medium truncate">{meal.name}</p>
