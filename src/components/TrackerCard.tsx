@@ -14,7 +14,6 @@ interface TrackerCardProps {
   color: 'meditation' | 'water' | 'nutrition' | 'fitness';
   className?: string;
   style?: React.CSSProperties;
-  addDialog?: React.ReactNode;
   summaryPath?: string;
 }
 
@@ -27,7 +26,6 @@ export function TrackerCard({
   color,
   className,
   style,
-  addDialog,
   summaryPath
 }: TrackerCardProps) {
   const navigate = useNavigate();
@@ -70,9 +68,8 @@ export function TrackerCard({
           {percentage.toFixed(0)}% complete
         </p>
         
-        {/* Action buttons */}
-        <div className="flex items-center justify-between pt-1 md:pt-2">
-          {addDialog}
+        {/* Action button */}
+        <div className="flex items-center justify-end pt-1 md:pt-2">
           {summaryPath && (
             <Button
               variant="ghost"

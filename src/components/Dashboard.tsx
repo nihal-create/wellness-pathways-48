@@ -4,10 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useTrackerData } from "@/hooks/useTrackerData";
-import { AddMealDialog } from "./AddMealDialog";
-import { AddWorkoutDialog } from "./AddWorkoutDialog";
-import { AddMeditationDialog } from "./AddMeditationDialog";
-import { AddWaterDialog } from "./AddWaterDialog";
 import { 
   Utensils, 
   Dumbbell, 
@@ -39,7 +35,6 @@ export function Dashboard() {
       unit: "cal",
       icon: <Utensils className="h-6 w-6 text-orange-600" />,
       color: 'nutrition' as const,
-      addDialog: <AddMealDialog onMealAdded={refetch} />,
       summaryPath: '/meals'
     },
     {
@@ -47,9 +42,8 @@ export function Dashboard() {
       current: totals.caloriesBurned,
       goal: 500,
       unit: "cal burned",
-      icon: <Dumbbell className="h-6 w-6 text-pink-600" />,
+      icon: <Dumbbell className="h-6 w-6" />,
       color: 'fitness' as const,
-      addDialog: <AddWorkoutDialog onWorkoutAdded={refetch} />,
       summaryPath: '/workouts'
     },
     {
@@ -57,18 +51,16 @@ export function Dashboard() {
       current: totals.meditationMinutes,
       goal: profile?.daily_meditation_goal || 20,
       unit: "minutes",
-      icon: <Brain className="h-6 w-6 text-purple-600" />,
-      color: 'meditation' as const,
-      addDialog: <AddMeditationDialog onMeditationAdded={refetch} />
+      icon: <Brain className="h-6 w-6" />,
+      color: 'meditation' as const
     },
     {
       title: "Water Intake",
       current: totals.waterGlasses,
       goal: profile?.daily_water_goal || 8,
       unit: "glasses",
-      icon: <Droplets className="h-6 w-6 text-blue-600" />,
-      color: 'water' as const,
-      addDialog: <AddWaterDialog onWaterAdded={refetch} />
+      icon: <Droplets className="h-6 w-6" />,
+      color: 'water' as const
     }
   ];
 
@@ -107,8 +99,6 @@ export function Dashboard() {
               {...tracker}
               className="animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` } as React.CSSProperties}
-              addDialog={tracker.addDialog}
-              summaryPath={tracker.summaryPath}
             />
           ))}
         </div>
