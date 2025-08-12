@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { TrackerCard } from "./TrackerCard";
 import { WelcomeHeader } from "./WelcomeHeader";
 import { Button } from "@/components/ui/button";
@@ -9,17 +10,18 @@ import {
   Dumbbell, 
   Brain, 
   Droplets,
-  LogOut,
-  BarChart3,
+  Plus,
   Settings
 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
+import { AddEntryDrawer } from "./AddEntryDrawer";
 
 export function Dashboard() {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const { getTodayTotals, refetch } = useTrackerData();
   const navigate = useNavigate();
+  const [addOpen, setAddOpen] = useState(false);
   
   const totals = getTodayTotals();
 
@@ -33,7 +35,7 @@ export function Dashboard() {
       current: totals.calories,
       goal: profile?.daily_calorie_goal || 2000,
       unit: "cal",
-      icon: <Utensils className="h-6 w-6 text-orange-600" />,
+      icon: <Utensils className="h-6 w-6" />,
       color: 'nutrition' as const,
       summaryPath: '/meals'
     },
@@ -111,6 +113,15 @@ export function Dashboard() {
           </p>
         </div>
       </div>
+      {/* Floating Add Button */}
+      <Button
+        onClick={() => setAddOpen(true)}
+        className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-50 h-14 w-14 rounded-full shadow-elevated"
+        aria-label="Add entry"
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
+      <AddEntryDrawer open={addOpen} onOpenChange={setAddOpen} onAnyAdded={refetch} />
     </div>
   );
 }

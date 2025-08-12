@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,25 +36,9 @@ export function AddEntryDrawer({ open, onOpenChange, onAnyAdded }: AddEntryDrawe
   const Container = isMobile ? Drawer : Sheet;
   const Header = isMobile ? DrawerHeader : SheetHeader;
   const Title = isMobile ? (DrawerTitle as any) : (SheetTitle as any);
-  const Content = ({ children }: { children: React.ReactNode }) =>
+  const Content = ({ children }: { children: ReactNode }) =>
     isMobile ? (
-      <DrawerContent className="p-0">
-        <DrawerOverlay />
-        <DrawerPortal>
-          <DrawerContent
-            ref={ref}
-            className={cn(
-              "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
-              className
-            )}
-            {...props}
-          >
-            <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
-            {children}
-          </DrawerContent>
-        </DrawerPortal>
-        {children}
-      </DrawerContent>
+      <DrawerContent className="p-0">{children}</DrawerContent>
     ) : (
       <SheetContent side="right" className="w-full sm:max-w-md">
         {children}
