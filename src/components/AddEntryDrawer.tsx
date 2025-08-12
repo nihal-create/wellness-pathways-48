@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,18 +21,24 @@ interface AddEntryDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAnyAdded: () => void;
+  startMode?: Exclude<Mode, "select">;
 }
 
 type Mode = "select" | "meal" | "workout" | "water" | "meditation";
 
-export function AddEntryDrawer({ open, onOpenChange, onAnyAdded }: AddEntryDrawerProps) {
+export function AddEntryDrawer({ open, onOpenChange, onAnyAdded, startMode }: AddEntryDrawerProps) {
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<Mode>("select");
+
+  useEffect(() => {
+    if (open && startMode) {
+      setMode(startMode);
+    }
+  }, [open, startMode]);
 
   const handleClose = () => {
     setMode("select");
     onOpenChange(false);
-
   };
 
   const Container = isMobile ? Drawer : Sheet;

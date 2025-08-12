@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Pencil, Trash2, Utensils } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ArrowLeft, Trash2, Utensils, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { AddMealDialog } from '@/components/AddMealDialog';
+import { AddEntryDrawer } from '@/components/AddEntryDrawer';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import type { Meal } from '@/hooks/useTrackerData';
 
 export default function MealsSummary() {
@@ -15,7 +15,7 @@ export default function MealsSummary() {
   const { user } = useAuth();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const fetchMeals = async () => {
     if (!user) return;
 
@@ -75,23 +75,7 @@ export default function MealsSummary() {
 
   const totals = getTotals();
 
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
-
-  const getMealTypeColor = (type: string | null) => {
-    switch (type) {
-      case 'breakfast': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'lunch': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'dinner': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'snack': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
+  
 
   if (loading) {
     return (
@@ -121,46 +105,42 @@ export default function MealsSummary() {
               <h1 className="text-2xl font-bold">Today's Meals</h1>
             </div>
           </div>
-          <AddMealDialog onMealAdded={fetchMeals} />
+          {/* Removed header add button */}
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Left column: Summary metrics (stacked) */}
-          <section aria-labelledby="meals-metrics" className="space-y-4">
+          {/* Left column: consolidated metrics */}
+          <section aria-labelledby="meals-metrics">
             <h2 id="meals-metrics" className="sr-only">Today's Meal Metrics</h2>
             <Card className="shadow-card">
-              <CardContent className="p-4">
-                <p className="text-2xl font-bold text-primary">{Math.round(totals.calories)}</p>
-                <p className="text-sm text-muted-foreground">Calories</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card">
-              <CardContent className="p-4">
-                <p className="text-2xl font-bold text-blue-600">{Math.round(totals.protein)}g</p>
-                <p className="text-sm text-muted-foreground">Protein</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card">
-              <CardContent className="p-4">
-                <p className="text-2xl font-bold text-yellow-600">{Math.round(totals.carbs)}g</p>
-                <p className="text-sm text-muted-foreground">Carbs</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card">
-              <CardContent className="p-4">
-                <p className="text-2xl font-bold text-red-600">{Math.round(totals.fat)}g</p>
-                <p className="text-sm text-muted-foreground">Fat</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card">
-              <CardContent className="p-4">
-                <p className="text-2xl font-bold text-green-600">{Math.round(totals.fiber)}g</p>
-                <p className="text-sm text-muted-foreground">Fiber</p>
+              <CardContent className="p-6">
+                <div>
+                  <p className="text-sm text-muted-foreground">Calories</p>
+                  <p className="mt-1 text-3xl font-bold text-primary">{Math.round(totals.calories)}</p>
+                </div>
+                <div className="mt-6 grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Protein</p>
+                    <p className="text-xl font-semibold">{Math.round(totals.protein)}g</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Carbs</p>
+                    <p className="text-xl font-semibold">{Math.round(totals.carbs)}g</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Fat</p>
+                    <p className="text-xl font-semibold">{Math.round(totals.fat)}g</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Fiber</p>
+                    <p className="text-xl font-semibold">{Math.round(totals.fiber)}g</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </section>
 
-          {/* Right column: Meals list (stacked) */}
+          {/* Right column: simplified meals list */}
           <section aria-labelledby="meals-list" className="space-y-4">
             <h2 id="meals-list" className="sr-only">Logged Meals</h2>
             {meals.length === 0 ? (
@@ -169,67 +149,31 @@ export default function MealsSummary() {
                   <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No meals logged today</h3>
                   <p className="text-muted-foreground mb-4">Start tracking your nutrition by adding your first meal.</p>
-                  <AddMealDialog onMealAdded={fetchMeals} />
+                  <Button onClick={() => setDrawerOpen(true)}>Add Meal</Button>
                 </CardContent>
               </Card>
             ) : (
               meals.map((meal) => (
                 <Card key={meal.id} className="shadow-card">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <CardTitle className="text-lg">{meal.name}</CardTitle>
-                        {meal.meal_type && (
-                          <Badge variant="outline" className={getMealTypeColor(meal.meal_type)}>
-                            {meal.meal_type}
-                          </Badge>
-                        )}
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{meal.name}</p>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">
-                          {formatTime(meal.logged_at)}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteMeal(meal.id)}
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <div className="flex items-center gap-3">
+                        <p className="text-sm font-semibold">{meal.calories} kcal</p>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" aria-label="More actions">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setDrawerOpen(true)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive" onClick={() => deleteMeal(meal.id)}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 text-sm">
-                      <div>
-                        <p className="font-semibold">{meal.calories}</p>
-                        <p className="text-muted-foreground">Calories</p>
-                      </div>
-                      {meal.protein !== null && (
-                        <div>
-                          <p className="font-semibold">{meal.protein}g</p>
-                          <p className="text-muted-foreground">Protein</p>
-                        </div>
-                      )}
-                      {meal.carbs !== null && (
-                        <div>
-                          <p className="font-semibold">{meal.carbs}g</p>
-                          <p className="text-muted-foreground">Carbs</p>
-                        </div>
-                      )}
-                      {meal.fat !== null && (
-                        <div>
-                          <p className="font-semibold">{meal.fat}g</p>
-                          <p className="text-muted-foreground">Fat</p>
-                        </div>
-                      )}
-                      {meal.fiber !== null && (
-                        <div>
-                          <p className="font-semibold">{meal.fiber}g</p>
-                          <p className="text-muted-foreground">Fiber</p>
-                        </div>
-                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -238,6 +182,14 @@ export default function MealsSummary() {
           </section>
         </div>
       </div>
+
+      {/* Floating Action Button */}
+      <Button onClick={() => setDrawerOpen(true)} aria-label="Add meal" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
+        <Plus className="h-6 w-6" />
+      </Button>
+
+      {/* Shared drawer */}
+      <AddEntryDrawer open={drawerOpen} onOpenChange={setDrawerOpen} onAnyAdded={fetchMeals} startMode="meal" />
     </div>
   );
 }
