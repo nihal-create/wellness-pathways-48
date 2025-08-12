@@ -544,11 +544,17 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
         onClose();
       }
     } else {
-      const { error } = await supabase.from("meals").insert({
+      const rows = selectedFoods.map((f) => ({
         user_id: user.id,
-        ...payload,
+        name: f.quantity > 1 ? `${f.name} (${f.quantity}x)` : f.name,
+        calories: Math.round(f.calories * f.quantity),
+        protein: Math.round(f.protein * f.quantity),
+        carbs: Math.round(f.carbs * f.quantity),
+        fat: Math.round(f.fat * f.quantity),
+        fiber: Math.round(f.fiber * f.quantity),
         logged_at: new Date().toISOString(),
-      });
+      }));
+      const { error } = await supabase.from("meals").insert(rows);
       setLoading(false);
       if (error) {
         toast({ title: "Error", description: "Failed to log meal.", variant: "destructive" });

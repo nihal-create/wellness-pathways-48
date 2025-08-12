@@ -148,12 +148,14 @@ export default function WorkoutsSummary() {
                 <Card key={workout.id} className="shadow-card">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="font-medium truncate">{workout.name}</p>
-                        <p className="text-xs text-muted-foreground">{workout.duration_minutes} min</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium truncate">
+                          {workout.name}
+                          <span className="text-xs text-muted-foreground ml-2 whitespace-nowrap">• {workout.duration_minutes} min</span>
+                        </p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <p className="text-sm font-semibold">{workout.calories_burned} cal</p>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <p className="text-sm font-semibold whitespace-nowrap">{workout.calories_burned} cal</p>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" aria-label="More actions">
@@ -176,7 +178,7 @@ export default function WorkoutsSummary() {
       </div>
 
       {/* Floating Action Button */}
-      <Button onClick={() => { setEditingWorkout(null); setDrawerOpen(true); }} aria-label="Add workout" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
+      <Button onClick={() => { setEditingWorkout(null); setDrawerOpen(true); }} aria-label="Add workout" size="icon" className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-50 h-14 w-14 rounded-full shadow-elevated">
         <Plus className="h-6 w-6" />
       </Button>
 

@@ -158,11 +158,11 @@ export default function MealsSummary() {
                 <Card key={meal.id} className="shadow-card">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="font-medium truncate">{meal.name}</p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <p className="text-sm font-semibold">{meal.calories} kcal</p>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <p className="text-sm font-semibold whitespace-nowrap">{meal.calories} kcal</p>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" aria-label="More actions">
@@ -185,7 +185,7 @@ export default function MealsSummary() {
       </div>
 
       {/* Floating Action Button */}
-      <Button onClick={() => { setEditingMeal(null); setDrawerOpen(true); }} aria-label="Add meal" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
+      <Button onClick={() => { setEditingMeal(null); setDrawerOpen(true); }} aria-label="Add meal" size="icon" className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-50 h-14 w-14 rounded-full shadow-elevated">
         <Plus className="h-6 w-6" />
       </Button>
 
