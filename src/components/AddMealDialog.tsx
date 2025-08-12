@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +9,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Search, X } from 'lucide-react';
 import { indianFoods } from '@/data/indianFoods';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AddMealDialogProps {
   onMealAdded: () => void;
@@ -28,6 +30,7 @@ interface SelectedFood {
 
 export function AddMealDialog({ onMealAdded }: AddMealDialogProps) {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -113,158 +116,176 @@ export function AddMealDialog({ onMealAdded }: AddMealDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" className="shadow-soft h-7 md:h-8 text-xs md:text-sm px-2 md:px-3">
-          <Plus className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-          <span className="hidden sm:inline">Add Meal</span>
-          <span className="sm:hidden">Add</span>
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-4xl h-[90vh] md:h-[85vh] flex flex-col p-4 md:p-6">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="text-lg md:text-xl">Log New Meal</DialogTitle>
-        </DialogHeader>
-        
-        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 flex-1 min-h-0">
-          {/* Search Section */}
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className="mb-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search Indian foods..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
+    <>
+      <Button onClick={() => setOpen(true)} size="sm" className="shadow-soft h-7 md:h-8 text-xs md:text-sm px-2 md:px-3">
+        <Plus className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+        <span className="hidden sm:inline">Add Meal</span>
+        <span className="sm:hidden">Add</span>
+      </Button>
 
-            {/* Food Results */}
-            <div className="flex-1 overflow-y-auto space-y-2">
-              {searchQuery && filteredFoods.map(food => (
-                <Card 
-                  key={food.id} 
-                  className="cursor-pointer transition-colors hover:bg-accent/50" 
-                  onClick={() => addFood(food)}
-                >
-                  <CardContent className="p-3">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm">{food.name}</h4>
-                        <p className="text-xs text-muted-foreground">
-                          {food.calories} cal • {food.protein}g protein
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        {food.standardQuantity}
-                      </Badge>
+      {isMobile ? (
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerContent className="p-0">
+            <DrawerHeader>
+              <DrawerTitle>Log New Meal</DrawerTitle>
+            </DrawerHeader>
+            <div className="w-[95vw] max-w-4xl h-[90vh] flex flex-col p-4">
+              {/* Form content */}
+              <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
+                {/* Search Section */}
+                <div className="flex-1 flex flex-col min-h-0">
+                  <div className="mb-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                      <Input
+                        placeholder="Search Indian foods..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                      />
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {searchQuery && filteredFoods.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
-                  No foods found matching "{searchQuery}"
-                </p>
-              )}
-              {!searchQuery && (
-                <p className="text-center text-muted-foreground py-8">
-                  Start typing to search for foods...
-                </p>
-              )}
-            </div>
-          </div>
+                  </div>
 
-          {/* Selected Foods Section */}
-          <div className="lg:w-80 flex flex-col">
-            <h3 className="font-medium mb-3 text-sm md:text-base">Selected Foods</h3>
-            
-            <div className="flex-1 space-y-2 mb-4">
-              {selectedFoods.map(food => (
-                <Card key={food.id} className="p-3">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-medium text-sm flex-1">{food.name}</h4>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 w-6 p-0"
-                        onClick={() => removeFood(food.id)}
+                  {/* Food Results */}
+                  <div className="flex-1 overflow-y-auto space-y-2">
+                    {searchQuery && filteredFoods.map(food => (
+                      <Card 
+                        key={food.id} 
+                        className="cursor-pointer transition-colors hover:bg-accent/50" 
+                        onClick={() => addFood(food)}
                       >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-6 w-6 p-0"
-                          onClick={() => updateFoodQuantity(food.id, food.quantity - 1)}
-                        >
-                          -
-                        </Button>
-                        <span className="text-sm w-8 text-center">{food.quantity}</span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-6 w-6 p-0"
-                          onClick={() => updateFoodQuantity(food.id, food.quantity + 1)}
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            {selectedFoods.length > 0 && (
-              <Card className="p-3 bg-accent/20 mb-4">
-                <h4 className="font-medium text-sm mb-2">Total Nutrition</h4>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span>Calories:</span>
-                    <span className="font-medium">{getTotalNutrition().calories.toFixed(0)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Protein:</span>
-                    <span className="font-medium">{getTotalNutrition().protein.toFixed(1)}g</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Carbs:</span>
-                    <span className="font-medium">{getTotalNutrition().carbs.toFixed(1)}g</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Fat:</span>
-                    <span className="font-medium">{getTotalNutrition().fat.toFixed(1)}g</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Fiber:</span>
-                    <span className="font-medium">{getTotalNutrition().fiber.toFixed(1)}g</span>
+                        <CardContent className="p-3">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm">{food.name}</h4>
+                              <p className="text-xs text-muted-foreground">
+                                {food.calories} cal • {food.protein}g protein
+                              </p>
+                            </div>
+                            <Badge variant="outline" className="text-xs">
+                              {food.standardQuantity}
+                            </Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {searchQuery && filteredFoods.length === 0 && (
+                      <p className="text-center text-muted-foreground py-8">
+                        No foods found matching "{searchQuery}"
+                      </p>
+                    )}
+                    {!searchQuery && (
+                      <p className="text-center text-muted-foreground py-8">
+                        Start typing to search for foods...
+                      </p>
+                    )}
                   </div>
                 </div>
-              </Card>
-            )}
 
-            <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
-                Cancel
-              </Button>
-              <Button 
-                onClick={handleSubmit} 
-                disabled={loading || selectedFoods.length === 0}
-                className="flex-1"
-              >
-                {loading ? "Adding..." : "Add Meal"}
-              </Button>
+                {/* Selected Foods Section */}
+                <div className="lg:w-80 flex flex-col">
+                  <h3 className="font-medium mb-3 text-sm md:text-base">Selected Foods</h3>
+                  <div className="flex-1 space-y-2 mb-4">
+                    {selectedFoods.map(food => (
+                      <Card key={food.id} className="p-3">
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-start">
+                            <h4 className="font-medium text-sm flex-1">{food.name}</h4>
+                            <Badge variant="outline" className="text-xs">{food.standardQuantity}</Badge>
+                            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => removeFood(food.id)}>
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <Button size="sm" variant="outline" className="h-6 w-6 p-0" onClick={() => updateFoodQuantity(food.id, food.quantity - 1)}>-</Button>
+                              <span className="text-sm w-8 text-center">{food.quantity}</span>
+                              <Button size="sm" variant="outline" className="h-6 w-6 p-0" onClick={() => updateFoodQuantity(food.id, food.quantity + 1)}>+</Button>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {selectedFoods.length > 0 && (
+                    <Card className="p-3 bg-accent/20 mb-4">
+                      <h4 className="font-medium text-sm mb-2">Total Nutrition</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between"><span>Calories:</span><span className="font-medium">{getTotalNutrition().calories.toFixed(0)}</span></div>
+                        <div className="flex justify-between"><span>Protein:</span><span className="font-medium">{getTotalNutrition().protein.toFixed(1)}g</span></div>
+                        <div className="flex justify-between"><span>Carbs:</span><span className="font-medium">{getTotalNutrition().carbs.toFixed(1)}g</span></div>
+                        <div className="flex justify-between"><span>Fat:</span><span className="font-medium">{getTotalNutrition().fat.toFixed(1)}g</span></div>
+                        <div className="flex justify-between"><span>Fiber:</span><span className="font-medium">{getTotalNutrition().fiber.toFixed(1)}g</span></div>
+                      </div>
+                    </Card>
+                  )}
+
+                  <div className="flex justify-end">
+                    <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0}>
+                      {loading ? "Adding..." : "Add Meal"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetContent side="right" className="w-full sm:max-w-md">
+            <SheetHeader>
+              <SheetTitle>Log New Meal</SheetTitle>
+            </SheetHeader>
+            {/* Replicate same content as mobile */}
+            <div className="w-full max-w-2xl max-h-[85vh] flex flex-col p-4">
+              <div className="flex flex-col gap-4 flex-1">
+                <div className="space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input placeholder="Search Indian foods..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+                  </div>
+                  <div className="max-h-48 overflow-y-auto space-y-2">
+                    {searchQuery && filteredFoods.map(food => (
+                      <Card key={food.id} className="cursor-pointer transition-colors hover:bg-accent/50" onClick={() => addFood(food)}>
+                        <CardContent className="p-3">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm">{food.name}</h4>
+                              <p className="text-xs text-muted-foreground">{food.calories} cal • {food.protein}g protein</p>
+                            </div>
+                            <Badge variant="outline" className="text-xs">{food.standardQuantity}</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {searchQuery && filteredFoods.length === 0 && (<p className="text-center text-muted-foreground py-4">No foods found matching "{searchQuery}"</p>)}
+                    {!searchQuery && (<p className="text-center text-muted-foreground py-4">Start typing to search for foods...</p>)}
+                  </div>
+                </div>
+
+                {selectedFoods.length > 0 && (
+                  <Card className="p-3 bg-accent/20">
+                    <h4 className="font-medium text-sm mb-2">Total Nutrition</h4>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex justify-between"><span>Calories:</span><span className="font-medium">{getTotalNutrition().calories.toFixed(0)}</span></div>
+                      <div className="flex justify-between"><span>Protein:</span><span className="font-medium">{getTotalNutrition().protein.toFixed(1)}g</span></div>
+                      <div className="flex justify-between"><span>Carbs:</span><span className="font-medium">{getTotalNutrition().carbs.toFixed(1)}g</span></div>
+                      <div className="flex justify-between"><span>Fat:</span><span className="font-medium">{getTotalNutrition().fat.toFixed(1)}g</span></div>
+                      <div className="flex justify-between"><span>Fiber:</span><span className="font-medium">{getTotalNutrition().fiber.toFixed(1)}g</span></div>
+                    </div>
+                  </Card>
+                )}
+
+                <div className="flex justify-end">
+                  <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0}>{loading ? "Adding..." : "Add Meal"}</Button>
+                </div>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+    </>
+  );
   );
 }

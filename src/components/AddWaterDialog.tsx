@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AddWaterDialogProps {
   onWaterAdded: () => void;
@@ -14,6 +16,7 @@ interface AddWaterDialogProps {
 
 export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [glasses, setGlasses] = useState('1');
@@ -86,81 +89,103 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" className="shadow-soft">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Water
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Log Water Intake</DialogTitle>
-        </DialogHeader>
-        
-        {/* Quick Add Buttons */}
-        <div className="space-y-4">
-          <div>
-            <Label className="text-sm font-medium">Quick Add</Label>
-            <div className="flex gap-2 mt-2">
-              {[1, 2, 3, 4].map((count) => (
-                <Button
-                  key={count}
-                  variant={selectedQuickAmount === count ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedQuickAmount(count)}
-                  className="flex-1"
-                >
-                  {count} glass{count > 1 ? 'es' : ''}
-                </Button>
-              ))}
-            </div>
-            {selectedQuickAmount && (
-              <Button 
-                onClick={handleQuickAdd}
-                disabled={loading}
-                className="w-full mt-3"
-              >
-                {loading ? "Adding..." : `Add ${selectedQuickAmount} glass${selectedQuickAmount > 1 ? 'es' : ''}`}
-              </Button>
-            )}
-          </div>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or</span>
-            </div>
-          </div>
+    <>
+      <Button onClick={() => setOpen(true)} size="sm" className="shadow-soft">
+        <Plus className="h-4 w-4 mr-2" />
+        Add Water
+      </Button>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="glasses">Number of Glasses *</Label>
-              <Input
-                id="glasses"
-                type="number"
-                value={glasses}
-                onChange={(e) => setGlasses(e.target.value)}
-                placeholder="1"
-                required
-                min="1"
-                max="20"
-              />
+      {isMobile ? (
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerContent className="p-0">
+            <DrawerHeader>
+              <DrawerTitle>Log Water Intake</DrawerTitle>
+            </DrawerHeader>
+            <div className="sm:max-w-md p-4">
+              {/* Quick Add Buttons */}
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Quick Add</Label>
+                  <div className="flex gap-2 mt-2">
+                    {[1, 2, 3, 4].map((count) => (
+                      <Button key={count} variant={selectedQuickAmount === count ? "default" : "outline"} size="sm" onClick={() => setSelectedQuickAmount(count)} className="flex-1">
+                        {count} glass{count > 1 ? 'es' : ''}
+                      </Button>
+                    ))}
+                  </div>
+                  {selectedQuickAmount && (
+                    <Button onClick={handleQuickAdd} disabled={loading} className="w-full mt-3">
+                      {loading ? "Adding..." : `Add ${selectedQuickAmount} glass${selectedQuickAmount > 1 ? 'es' : ''}`}
+                    </Button>
+                  )}
+                </div>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or</span>
+                  </div>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="glasses">Number of Glasses *</Label>
+                    <Input id="glasses" type="number" value={glasses} onChange={(e) => setGlasses(e.target.value)} placeholder="1" required min="1" max="20" />
+                  </div>
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={loading}>{loading ? "Adding..." : "Add Water"}</Button>
+                  </div>
+                </form>
+              </div>
             </div>
-
-            <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Adding..." : "Add Water"}
-              </Button>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetContent className="sm:max-w-md" side="right">
+            <SheetHeader>
+              <SheetTitle>Log Water Intake</SheetTitle>
+            </SheetHeader>
+            <div className="p-4">
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Quick Add</Label>
+                  <div className="flex gap-2 mt-2">
+                    {[1, 2, 3, 4].map((count) => (
+                      <Button key={count} variant={selectedQuickAmount === count ? "default" : "outline"} size="sm" onClick={() => setSelectedQuickAmount(count)} className="flex-1">
+                        {count} glass{count > 1 ? 'es' : ''}
+                      </Button>
+                    ))}
+                  </div>
+                  {selectedQuickAmount && (
+                    <Button onClick={handleQuickAdd} disabled={loading} className="w-full mt-3">
+                      {loading ? "Adding..." : `Add ${selectedQuickAmount} glass${selectedQuickAmount > 1 ? 'es' : ''}`}
+                    </Button>
+                  )}
+                </div>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or</span>
+                  </div>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="glasses">Number of Glasses *</Label>
+                    <Input id="glasses" type="number" value={glasses} onChange={(e) => setGlasses(e.target.value)} placeholder="1" required min="1" max="20" />
+                  </div>
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={loading}>{loading ? "Adding..." : "Add Water"}</Button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </form>
-        </div>
-      </DialogContent>
-    </Dialog>
+          </SheetContent>
+        </Sheet>
+      )}
+    </>
+  );
   );
 }
