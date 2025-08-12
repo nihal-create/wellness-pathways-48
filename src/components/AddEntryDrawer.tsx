@@ -147,6 +147,13 @@ function WaterForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => v
     }
   };
 
+  const handleSubmit = () => {
+    const amount = selectedQuickAmount || parseInt(glasses);
+    if (amount > 0) {
+      insert(amount);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -157,18 +164,16 @@ function WaterForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => v
               key={count}
               variant={selectedQuickAmount === count ? "default" : "outline"}
               size="sm"
-              onClick={() => setSelectedQuickAmount(count)}
+              onClick={() => {
+                setSelectedQuickAmount(count);
+                setGlasses(count.toString());
+              }}
               className="flex-1"
             >
               {count} glass{count > 1 ? "es" : ""}
             </Button>
           ))}
         </div>
-        {selectedQuickAmount && (
-          <Button onClick={() => insert(selectedQuickAmount)} disabled={loading} className="w-full mt-3">
-            {loading ? "Adding..." : `Add ${selectedQuickAmount} glass${selectedQuickAmount > 1 ? "es" : ""}`}
-          </Button>
-        )}
       </div>
 
       <div className="relative">
@@ -180,20 +185,17 @@ function WaterForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => v
         </div>
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          insert(parseInt(glasses));
-        }}
-        className="space-y-4"
-      >
+      <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="glasses">Number of Glasses *</Label>
           <Input
             id="glasses"
             type="number"
             value={glasses}
-            onChange={(e) => setGlasses(e.target.value)}
+            onChange={(e) => {
+              setGlasses(e.target.value);
+              setSelectedQuickAmount(null);
+            }}
             placeholder="1"
             required
             min={1}
@@ -201,11 +203,11 @@ function WaterForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => v
           />
         </div>
         <div className="flex justify-end gap-2">
-          <Button type="submit" disabled={loading}>
+          <Button onClick={handleSubmit} disabled={loading || !glasses || parseInt(glasses) <= 0}>
             {loading ? "Adding..." : "Add Water"}
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
@@ -293,6 +295,8 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
   const [searchQuery, setSearchQuery] = useState("");
   const [workoutData, setWorkoutData] = useState({ name: "", type: "", duration_minutes: "" });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (editWorkout) {
       setWorkoutData({
@@ -347,6 +351,7 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
         toast({ title: "Workout logged!", description: `${workoutData.name || selectedWorkout.name} logged.` });
         onAdded();
         onClose();
+        navigate("/workouts");
       }
     }
   };
@@ -363,21 +368,21 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
         />
       </div>
 
-      <div className="max-h-48 overflow-y-auto space-y-2">
+      <div className="max-h-48 overflow-y-auto space-y-2 p-1">
         {searchQuery &&
           filteredWorkouts.map((workout) => (
             <Card
               key={workout.id}
-              className={`cursor-pointer transition-colors ${workoutData.type === workout.name ? "ring-2 ring-primary bg-accent" : "hover:bg-accent/50"}`}
+              className={`cursor-pointer transition-colors w-full ${workoutData.type === workout.name ? "ring-2 ring-primary bg-accent" : "hover:bg-accent/50"}`}
               onClick={() => setWorkoutData({ ...workoutData, type: workout.name })}
             >
               <CardContent className="p-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-sm">{workout.name}</h4>
+                <div className="flex justify-between items-start gap-2 min-w-0">
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <h4 className="font-medium text-sm truncate">{workout.name}</h4>
                     <p className="text-xs text-muted-foreground">{workout.caloriesPerMinute} cal/min</p>
                   </div>
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs shrink-0">
                     {workout.category}
                   </Badge>
                 </div>
@@ -580,17 +585,17 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
         />
       </div>
 
-      <div className="space-y-2 max-h-56 overflow-y-auto">
+      <div className="space-y-2 max-h-56 overflow-y-auto p-1">
         {searchQuery &&
           filteredFoods.map((food) => (
-            <Card key={food.id} className="cursor-pointer transition-colors hover:bg-accent/50" onClick={() => addFood(food)}>
+            <Card key={food.id} className="cursor-pointer transition-colors hover:bg-accent/50 w-full" onClick={() => addFood(food)}>
               <CardContent className="p-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-sm">{food.name}</h4>
+                <div className="flex justify-between items-start gap-2 min-w-0">
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <h4 className="font-medium text-sm truncate">{food.name}</h4>
                     <p className="text-xs text-muted-foreground">{food.calories} cal • {food.protein}g protein</p>
                   </div>
-                  <Badge variant="outline" className="text-xs">{food.standardQuantity}</Badge>
+                  <Badge variant="outline" className="text-xs shrink-0">{food.standardQuantity}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -605,13 +610,13 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
         <h3 className="font-medium">Selected Foods</h3>
         <div className="space-y-2">
           {selectedFoods.map((food) => (
-            <Card key={food.id} className="p-3">
+            <Card key={food.id} className="p-3 w-full">
               <div className="space-y-2">
-                <div className="flex justify-between items-start">
-                  <h4 className="font-medium text-sm flex-1">{food.name}</h4>
-                  <Badge variant="outline" className="text-xs">{food.standardQuantity}</Badge>
+                <div className="flex justify-between items-start gap-2 min-w-0">
+                  <h4 className="font-medium text-sm flex-1 min-w-0 truncate">{food.name}</h4>
+                  <Badge variant="outline" className="text-xs shrink-0">{food.standardQuantity}</Badge>
 
-                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => updateQty(food.id, 0)}>
+                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0 shrink-0" onClick={() => updateQty(food.id, 0)}>
                     <X className="h-3 w-3" />
                   </Button>
                 </div>

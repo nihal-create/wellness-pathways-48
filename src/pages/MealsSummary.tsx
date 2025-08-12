@@ -97,7 +97,7 @@ export default function MealsSummary() {
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              {/* Back */}
             </Button>
             <div className="flex items-center space-x-2">
               <div className="p-2 rounded-full bg-wellness-nutrition">
@@ -142,7 +142,7 @@ export default function MealsSummary() {
           </section>
 
           {/* Right column: simplified meals list */}
-          <section aria-labelledby="meals-list" className="space-y-4 md:space-y-6">
+          <section aria-labelledby="meals-list" className="space-y-4 md:space-y-6 min-w-0 overflow-hidden">
             <h2 id="meals-list" className="sr-only">Logged Meals</h2>
             {meals.length === 0 ? (
               <Card className="w-full shadow-card">
@@ -156,12 +156,12 @@ export default function MealsSummary() {
             ) : (
               meals.map((meal) => (
                 <Card key={meal.id} className="w-full shadow-card">
-                  <CardContent className="p-4 md:p-6 overflow-hidden">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0 flex-1">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between gap-2 min-w-0">
+                      <div className="min-w-0 flex-1 overflow-hidden">
                         <p className="font-medium truncate">{meal.name}</p>
                       </div>
-                      <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         <p className="text-sm font-semibold whitespace-nowrap">{meal.calories} kcal</p>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>

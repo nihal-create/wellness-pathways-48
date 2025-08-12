@@ -95,7 +95,7 @@ export default function WorkoutsSummary() {
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              {/* Back */}
             </Button>
             <div className="flex items-center space-x-2">
               <div className="p-2 rounded-full bg-wellness-fitness">
@@ -132,7 +132,7 @@ export default function WorkoutsSummary() {
           </section>
 
           {/* Right column: simplified workouts list */}
-          <section aria-labelledby="workouts-list" className="space-y-4 md:space-y-6">
+          <section aria-labelledby="workouts-list" className="space-y-4 md:space-y-6 min-w-0 overflow-hidden">
             <h2 id="workouts-list" className="sr-only">Logged Workouts</h2>
             {workouts.length === 0 ? (
               <Card className="w-full shadow-card">
@@ -146,15 +146,15 @@ export default function WorkoutsSummary() {
             ) : (
               workouts.map((workout) => (
                 <Card key={workout.id} className="w-full shadow-card">
-                  <CardContent className="p-4 md:p-6 overflow-hidden">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0 flex-1">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between gap-2 min-w-0">
+                      <div className="min-w-0 flex-1 overflow-hidden">
                         <p className="font-medium truncate">
                           {workout.name}
                           <span className="text-xs text-muted-foreground ml-2 whitespace-nowrap">• {workout.duration_minutes} min</span>
                         </p>
                       </div>
-                      <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         <p className="text-sm font-semibold whitespace-nowrap">{workout.calories_burned} cal</p>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>

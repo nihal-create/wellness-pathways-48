@@ -146,7 +146,7 @@ export default function Profile() {
         <div className="flex items-center gap-4 mb-4 md:mb-6">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+            {/* Back */}
           </Button>
           <h1 className="text-2xl font-bold">Profile</h1>
         </div>
@@ -160,7 +160,7 @@ export default function Profile() {
       <div className="flex items-center gap-4 mb-4 md:mb-6">
         <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
+          {/* Back */}
         </Button>
         <h1 className="text-2xl font-bold">Profile</h1>
       </div>
