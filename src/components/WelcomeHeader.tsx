@@ -11,7 +11,7 @@ export function WelcomeHeader({ profile }: WelcomeHeaderProps) {
   const displayName = profile?.display_name || "there";
 
   return (
-    <div className="bg-gradient-hero p-6 rounded-2xl shadow-soft mb-6">
+    <div className="bg-gradient-hero p-4 md:p-6 rounded-2xl shadow-soft mb-4 md:mb-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground mb-1">

@@ -299,7 +299,7 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-3 py-4 md:px-6 md:py-8">
       <div className="w-full max-w-md">
         <Card className="shadow-card">
           <CardHeader>

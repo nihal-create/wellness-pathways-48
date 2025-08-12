@@ -142,8 +142,8 @@ export default function Profile() {
 
   if (profileLoading) {
     return (
-      <div className="container max-w-2xl mx-auto p-4">
-        <div className="flex items-center gap-4 mb-6">
+      <div className="bg-background px-3 py-4 md:px-6 md:py-8 max-w-2xl mx-auto overflow-x-hidden">
+        <div className="flex items-center gap-4 mb-4 md:mb-6">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -156,8 +156,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="container max-w-2xl mx-auto p-4">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="bg-background px-3 py-4 md:px-6 md:py-8 max-w-2xl mx-auto overflow-x-hidden">
+      <div className="flex items-center gap-4 mb-4 md:mb-6">
         <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back

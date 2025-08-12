@@ -90,10 +90,10 @@ export default function MealsSummary() {
   }
 
   return (
-    <div className="bg-background p-4 overflow-x-hidden">
+    <div className="bg-background px-3 py-4 md:px-6 md:py-8 overflow-x-hidden">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 md:mb-8">
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -109,12 +109,12 @@ export default function MealsSummary() {
           {/* Removed header add button */}
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           {/* Left column: consolidated metrics */}
           <section aria-labelledby="meals-metrics">
             <h2 id="meals-metrics" className="sr-only">Today's Meal Metrics</h2>
             <Card className="shadow-card">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div>
                   <p className="text-sm text-muted-foreground">Calories</p>
                   <p className="mt-1 text-3xl font-bold text-primary">{Math.round(totals.calories)}</p>
@@ -142,11 +142,11 @@ export default function MealsSummary() {
           </section>
 
           {/* Right column: simplified meals list */}
-          <section aria-labelledby="meals-list" className="space-y-4">
+          <section aria-labelledby="meals-list" className="space-y-4 md:space-y-6">
             <h2 id="meals-list" className="sr-only">Logged Meals</h2>
             {meals.length === 0 ? (
               <Card className="w-full shadow-card">
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-6 md:p-8 text-center">
                   <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No meals logged today</h3>
                   <p className="text-muted-foreground mb-4">Start tracking your nutrition by adding your first meal.</p>
@@ -156,7 +156,7 @@ export default function MealsSummary() {
             ) : (
               meals.map((meal) => (
                 <Card key={meal.id} className="w-full shadow-card">
-                  <CardContent className="p-4 overflow-hidden">
+                  <CardContent className="p-4 md:p-6 overflow-hidden">
                     <div className="flex items-center justify-between gap-4">
                       <div className="min-w-0 flex-1">
                         <p className="font-medium truncate">{meal.name}</p>
