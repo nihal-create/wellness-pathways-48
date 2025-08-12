@@ -321,7 +321,7 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
       const { error } = await supabase
         .from("workouts")
         .update({
-          name: workoutData.name || selectedWorkout.name,
+          name: selectedWorkout.name, // Always use the selected workout type's name
           type: workoutData.type,
           duration_minutes: parseInt(workoutData.duration_minutes),
           calories_burned: estimatedCalories,
@@ -331,14 +331,14 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
       if (error) {
         toast({ title: "Error", description: "Failed to update workout.", variant: "destructive" });
       } else {
-        toast({ title: "Workout updated!", description: `${workoutData.name || selectedWorkout.name} updated.` });
+        toast({ title: "Workout updated!", description: `${selectedWorkout.name} updated.` });
         onAdded();
         onClose();
       }
     } else {
       const { error } = await supabase.from("workouts").insert({
         user_id: user.id,
-        name: workoutData.name || selectedWorkout.name,
+        name: selectedWorkout.name, // Always use the selected workout type's name
         type: workoutData.type,
         duration_minutes: parseInt(workoutData.duration_minutes),
         calories_burned: estimatedCalories,
@@ -348,7 +348,7 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
       if (error) {
         toast({ title: "Error", description: "Failed to log workout.", variant: "destructive" });
       } else {
-        toast({ title: "Workout logged!", description: `${workoutData.name || selectedWorkout.name} logged.` });
+        toast({ title: "Workout logged!", description: `${selectedWorkout.name} logged.` });
         onAdded();
         onClose();
         navigate("/workouts");
@@ -369,6 +369,23 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
       </div>
 
       <div className="max-h-48 overflow-y-auto space-y-2 p-1">
+        {/* Show currently selected workout when editing */}
+        {editWorkout && workoutData.type && !searchQuery && (
+          <Card className="ring-2 ring-primary bg-accent w-full">
+            <CardContent className="p-3">
+              <div className="flex justify-between items-start gap-2 min-w-0">
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <h4 className="font-medium text-sm truncate">{selectedWorkout?.name}</h4>
+                  <p className="text-xs text-muted-foreground">{selectedWorkout?.caloriesPerMinute} cal/min</p>
+                </div>
+                <Badge variant="outline" className="text-xs shrink-0">
+                  {selectedWorkout?.category}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
         {searchQuery &&
           filteredWorkouts.map((workout) => (
             <Card
@@ -392,14 +409,17 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
         {searchQuery && filteredWorkouts.length === 0 && (
           <p className="text-center text-muted-foreground py-4">No workouts found</p>
         )}
-        {!searchQuery && (
+        {!searchQuery && !editWorkout && (
           <p className="text-center text-muted-foreground py-4">Start typing to search for workouts...</p>
+        )}
+        {!searchQuery && editWorkout && !workoutData.type && (
+          <p className="text-center text-muted-foreground py-4">Search to change workout type...</p>
         )}
       </div>
 
       {workoutData.type && (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="workout-name">Custom Name (optional)</Label>
             <Input
               id="workout-name"
@@ -407,7 +427,7 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
               onChange={(e) => setWorkoutData({ ...workoutData, name: e.target.value })}
               placeholder="e.g., Morning Jog"
             />
-          </div>
+          </div> */}
           <div className="space-y-2">
             <Label htmlFor="workout-duration">Duration (minutes) *</Label>
             <Input
