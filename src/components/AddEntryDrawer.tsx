@@ -15,6 +15,7 @@ import { toast } from "@/hooks/use-toast";
 import { Brain, Dumbbell, Droplets, Search, Utensils, X } from "lucide-react";
 import { indianFoods } from "@/data/indianFoods";
 import { workoutTypes } from "@/data/workouts";
+import { useNavigate } from "react-router-dom";
 
 interface AddEntryDrawerProps {
   open: boolean;
@@ -31,11 +32,12 @@ export function AddEntryDrawer({ open, onOpenChange, onAnyAdded }: AddEntryDrawe
   const handleClose = () => {
     setMode("select");
     onOpenChange(false);
+
   };
 
   const Container = isMobile ? Drawer : Sheet;
   const Header = isMobile ? DrawerHeader : SheetHeader;
-  const Title = isMobile ? (DrawerTitle as any) : (SheetTitle as any);
+  const Title: typeof DrawerTitle | typeof SheetTitle = isMobile ? DrawerTitle : SheetTitle;
   const Content = ({ children }: { children: ReactNode }) =>
     isMobile ? (
       <DrawerContent className="p-0">{children}</DrawerContent>
@@ -57,7 +59,7 @@ export function AddEntryDrawer({ open, onOpenChange, onAnyAdded }: AddEntryDrawe
             <SelectGrid onPick={(m) => setMode(m)} />
           ) : (
             <div className="space-y-4">
-              <Button variant="ghost" size="sm" onClick={() => setMode("select")}>Back</Button>
+              {/* <Button variant="ghost" size="sm" onClick={() => setMode("select")}>Back</Button> */}
               {mode === "water" && (
                 <WaterForm onClose={handleClose} onAdded={onAnyAdded} />
               )}
@@ -409,6 +411,7 @@ interface SelectedFood {
   calories: number;
   protein: number;
   carbs: number;
+  standardQuantity: string;
   fat: number;
   fiber: number;
 }
@@ -419,6 +422,8 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFoods, setSelectedFoods] = useState<SelectedFood[]>([]);
 
+  const navigate = useNavigate();
+
   const filteredFoods = indianFoods.filter((food) => food.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const addFood = (food: (typeof indianFoods)[0]) => {
@@ -428,6 +433,7 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
     } else {
       setSelectedFoods((prev) => [...prev, { ...food, quantity: 1 }]);
     }
+    setSearchQuery("");
   };
 
   const updateQty = (id: string, qty: number) => {
@@ -469,6 +475,8 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
       toast({ title: "Meal logged!", description: `Added ${Math.round(totals.calories)} calories.` });
       onAdded();
       onClose();
+      navigate('/meals'); 
+
     }
   };
 
@@ -513,6 +521,8 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
               <div className="space-y-2">
                 <div className="flex justify-between items-start">
                   <h4 className="font-medium text-sm flex-1">{food.name}</h4>
+                  <Badge variant="outline" className="text-xs">{food.standardQuantity}</Badge>
+
                   <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => updateQty(food.id, 0)}>
                     <X className="h-3 w-3" />
                   </Button>
@@ -533,10 +543,10 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
         </div>
       </div>
 
-      <Card className="p-3 bg-accent/20">
+      {/* <Card className="p-3 bg-accent/20">
         <h4 className="font-medium text-sm mb-2">Total Nutrition</h4>
         <p className="text-xs text-muted-foreground">Calories: {Math.round(totals.calories)} • Protein: {Math.round(totals.protein)}g • Carbs: {Math.round(totals.carbs)}g • Fat: {Math.round(totals.fat)}g • Fiber: {Math.round(totals.fiber)}g</p>
-      </Card>
+      </Card> */}
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onClose}>
