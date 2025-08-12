@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Trash2, Dumbbell, Clock, Flame, Plus, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Dumbbell, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,6 +16,7 @@ export default function WorkoutsSummary() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
   const fetchWorkouts = async () => {
     if (!user) return;
 
@@ -139,7 +140,7 @@ export default function WorkoutsSummary() {
                   <Dumbbell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No workouts logged today</h3>
                   <p className="text-muted-foreground mb-4">Start your fitness journey by logging your first workout.</p>
-                  <Button onClick={() => setDrawerOpen(true)}>Add Workout</Button>
+                  <Button onClick={() => { setEditingWorkout(null); setDrawerOpen(true); }}>Add Workout</Button>
                 </CardContent>
               </Card>
             ) : (
@@ -160,7 +161,7 @@ export default function WorkoutsSummary() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setDrawerOpen(true)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { setEditingWorkout(workout); setDrawerOpen(true); }}>Edit</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive" onClick={() => deleteWorkout(workout.id)}>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -175,12 +176,18 @@ export default function WorkoutsSummary() {
       </div>
 
       {/* Floating Action Button */}
-      <Button onClick={() => setDrawerOpen(true)} aria-label="Add workout" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
+      <Button onClick={() => { setEditingWorkout(null); setDrawerOpen(true); }} aria-label="Add workout" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
         <Plus className="h-6 w-6" />
       </Button>
 
       {/* Shared drawer */}
-      <AddEntryDrawer open={drawerOpen} onOpenChange={setDrawerOpen} onAnyAdded={fetchWorkouts} startMode="workout" />
+      <AddEntryDrawer
+        open={drawerOpen}
+        onOpenChange={(o) => { if (!o) setEditingWorkout(null); setDrawerOpen(o); }}
+        onAnyAdded={fetchWorkouts}
+        startMode="workout"
+        editWorkout={editingWorkout ?? undefined}
+      />
     </div>
   );
 }

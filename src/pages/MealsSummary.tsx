@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Trash2, Utensils, Plus, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Utensils, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,6 +16,7 @@ export default function MealsSummary() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   const fetchMeals = async () => {
     if (!user) return;
 
@@ -149,7 +150,7 @@ export default function MealsSummary() {
                   <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No meals logged today</h3>
                   <p className="text-muted-foreground mb-4">Start tracking your nutrition by adding your first meal.</p>
-                  <Button onClick={() => setDrawerOpen(true)}>Add Meal</Button>
+                  <Button onClick={() => { setEditingMeal(null); setDrawerOpen(true); }}>Add Meal</Button>
                 </CardContent>
               </Card>
             ) : (
@@ -169,7 +170,7 @@ export default function MealsSummary() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setDrawerOpen(true)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { setEditingMeal(meal); setDrawerOpen(true); }}>Edit</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive" onClick={() => deleteMeal(meal.id)}>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -184,12 +185,18 @@ export default function MealsSummary() {
       </div>
 
       {/* Floating Action Button */}
-      <Button onClick={() => setDrawerOpen(true)} aria-label="Add meal" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
+      <Button onClick={() => { setEditingMeal(null); setDrawerOpen(true); }} aria-label="Add meal" size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg">
         <Plus className="h-6 w-6" />
       </Button>
 
       {/* Shared drawer */}
-      <AddEntryDrawer open={drawerOpen} onOpenChange={setDrawerOpen} onAnyAdded={fetchMeals} startMode="meal" />
+      <AddEntryDrawer
+        open={drawerOpen}
+        onOpenChange={(o) => { if (!o) setEditingMeal(null); setDrawerOpen(o); }}
+        onAnyAdded={fetchMeals}
+        startMode="meal"
+        editMeal={editingMeal ?? undefined}
+      />
     </div>
   );
 }

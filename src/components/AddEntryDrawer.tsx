@@ -16,17 +16,20 @@ import { Brain, Dumbbell, Droplets, Search, Utensils, X } from "lucide-react";
 import { indianFoods } from "@/data/indianFoods";
 import { workoutTypes } from "@/data/workouts";
 import { useNavigate } from "react-router-dom";
+import type { Meal, Workout } from "@/hooks/useTrackerData";
 
 interface AddEntryDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAnyAdded: () => void;
   startMode?: Exclude<Mode, "select">;
+  editMeal?: Meal;
+  editWorkout?: Workout;
 }
 
 type Mode = "select" | "meal" | "workout" | "water" | "meditation";
 
-export function AddEntryDrawer({ open, onOpenChange, onAnyAdded, startMode }: AddEntryDrawerProps) {
+export function AddEntryDrawer({ open, onOpenChange, onAnyAdded, startMode, editMeal, editWorkout }: AddEntryDrawerProps) {
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<Mode>("select");
 
@@ -73,10 +76,10 @@ export function AddEntryDrawer({ open, onOpenChange, onAnyAdded, startMode }: Ad
                 <MeditationForm onClose={handleClose} onAdded={onAnyAdded} />
               )}
               {mode === "workout" && (
-                <WorkoutForm onClose={handleClose} onAdded={onAnyAdded} />
+                <WorkoutForm onClose={handleClose} onAdded={onAnyAdded} editWorkout={editWorkout} />
               )}
               {mode === "meal" && (
-                <MealForm onClose={handleClose} onAdded={onAnyAdded} />
+                <MealForm onClose={handleClose} onAdded={onAnyAdded} editMeal={editMeal} />
               )}
             </div>
           )}
@@ -284,11 +287,21 @@ function MeditationForm({ onClose, onAdded }: { onClose: () => void; onAdded: ()
   );
 }
 
-function WorkoutForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
+function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; onAdded: () => void; editWorkout?: Workout }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [workoutData, setWorkoutData] = useState({ name: "", type: "", duration_minutes: "" });
+
+  useEffect(() => {
+    if (editWorkout) {
+      setWorkoutData({
+        name: editWorkout.name || "",
+        type: editWorkout.type || "",
+        duration_minutes: String(editWorkout.duration_minutes ?? ""),
+      });
+    }
+  }, [editWorkout]);
 
   const filteredWorkouts = workoutTypes.filter((w) => w.name.toLowerCase().includes(searchQuery.toLowerCase()));
   const selectedWorkout = workoutTypes.find((w) => w.name === workoutData.type);
@@ -300,21 +313,41 @@ function WorkoutForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
     e.preventDefault();
     if (!user || !selectedWorkout) return;
     setLoading(true);
-    const { error } = await supabase.from("workouts").insert({
-      user_id: user.id,
-      name: workoutData.name || selectedWorkout.name,
-      type: workoutData.type,
-      duration_minutes: parseInt(workoutData.duration_minutes),
-      calories_burned: estimatedCalories,
-      logged_at: new Date().toISOString(),
-    });
-    setLoading(false);
-    if (error) {
-      toast({ title: "Error", description: "Failed to log workout.", variant: "destructive" });
+    if (editWorkout) {
+      const { error } = await supabase
+        .from("workouts")
+        .update({
+          name: workoutData.name || selectedWorkout.name,
+          type: workoutData.type,
+          duration_minutes: parseInt(workoutData.duration_minutes),
+          calories_burned: estimatedCalories,
+        })
+        .eq("id", editWorkout.id);
+      setLoading(false);
+      if (error) {
+        toast({ title: "Error", description: "Failed to update workout.", variant: "destructive" });
+      } else {
+        toast({ title: "Workout updated!", description: `${workoutData.name || selectedWorkout.name} updated.` });
+        onAdded();
+        onClose();
+      }
     } else {
-      toast({ title: "Workout logged!", description: `${workoutData.name || selectedWorkout.name} logged.` });
-      onAdded();
-      onClose();
+      const { error } = await supabase.from("workouts").insert({
+        user_id: user.id,
+        name: workoutData.name || selectedWorkout.name,
+        type: workoutData.type,
+        duration_minutes: parseInt(workoutData.duration_minutes),
+        calories_burned: estimatedCalories,
+        logged_at: new Date().toISOString(),
+      });
+      setLoading(false);
+      if (error) {
+        toast({ title: "Error", description: "Failed to log workout.", variant: "destructive" });
+      } else {
+        toast({ title: "Workout logged!", description: `${workoutData.name || selectedWorkout.name} logged.` });
+        onAdded();
+        onClose();
+      }
     }
   };
 
@@ -392,7 +425,7 @@ function WorkoutForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
           )}
           <div className="flex justify-end gap-2 pt-2">
             <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes} className="flex-none">
-              {loading ? "Logging..." : "Log Workout"}
+              {loading ? (editWorkout ? "Updating..." : "Logging...") : editWorkout ? "Update Workout" : "Log Workout"}
             </Button>
           </div>
         </form>
@@ -413,7 +446,7 @@ interface SelectedFood {
   fiber: number;
 }
 
-function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
+function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded: () => void; editMeal?: Meal }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -422,6 +455,42 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
   const navigate = useNavigate();
 
   const filteredFoods = indianFoods.filter((food) => food.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  useEffect(() => {
+    if (editMeal) {
+      const parsed: SelectedFood[] = [];
+      const parts = editMeal.name.split(",").map((p) => p.trim());
+      for (const part of parts) {
+        const m = part.match(/^(.*) \((\d+)x\)$/);
+        if (m) {
+          const foodName = m[1];
+          const qty = parseInt(m[2]);
+          const found = indianFoods.find((f) => f.name === foodName);
+          if (found) {
+            parsed.push({ ...found, quantity: qty });
+          }
+        }
+      }
+      if (parsed.length > 0) {
+        setSelectedFoods(parsed);
+      } else {
+        // Fallback single custom entry matching totals
+        setSelectedFoods([
+          {
+            id: "custom",
+            name: editMeal.name,
+            quantity: 1,
+            calories: editMeal.calories,
+            protein: editMeal.protein || 0,
+            carbs: editMeal.carbs || 0,
+            fat: editMeal.fat || 0,
+            fiber: editMeal.fiber || 0,
+            standardQuantity: "custom",
+          },
+        ]);
+      }
+    }
+  }, [editMeal]);
 
   const addFood = (food: (typeof indianFoods)[0]) => {
     const existing = selectedFoods.find((f) => f.id === food.id);
@@ -455,25 +524,41 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
   const handleSubmit = async () => {
     if (!user || selectedFoods.length === 0) return;
     setLoading(true);
-    const { error } = await supabase.from("meals").insert({
-      user_id: user.id,
+    const payload = {
       name: selectedFoods.map((f) => `${f.name} (${f.quantity}x)`).join(", "),
       calories: Math.round(totals.calories),
       protein: Math.round(totals.protein),
       carbs: Math.round(totals.carbs),
       fat: Math.round(totals.fat),
       fiber: Math.round(totals.fiber),
-      logged_at: new Date().toISOString(),
-    });
-    setLoading(false);
-    if (error) {
-      toast({ title: "Error", description: "Failed to log meal.", variant: "destructive" });
-    } else {
-      toast({ title: "Meal logged!", description: `Added ${Math.round(totals.calories)} calories.` });
-      onAdded();
-      onClose();
-      navigate('/meals'); 
+    };
 
+    if (editMeal) {
+      const { error } = await supabase.from("meals").update(payload).eq("id", editMeal.id);
+      setLoading(false);
+      if (error) {
+        toast({ title: "Error", description: "Failed to update meal.", variant: "destructive" });
+      } else {
+        toast({ title: "Meal updated!", description: `Updated ${Math.round(totals.calories)} calories.` });
+        onAdded();
+        onClose();
+      }
+    } else {
+      const { error } = await supabase.from("meals").insert({
+        user_id: user.id,
+        ...payload,
+        logged_at: new Date().toISOString(),
+      });
+      setLoading(false);
+      if (error) {
+        toast({ title: "Error", description: "Failed to log meal.", variant: "destructive" });
+      } else {
+        toast({ title: "Meal logged!", description: `Added ${Math.round(totals.calories)} calories.` });
+        onAdded();
+        onClose();
+        navigate('/meals'); 
+
+      }
     }
   };
 
@@ -547,7 +632,7 @@ function MealForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
 
       <div className="flex justify-end gap-2">
         <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0}>
-          {loading ? "Adding..." : "Add Meal"}
+          {loading ? (editMeal ? "Updating..." : "Adding...") : editMeal ? "Update Meal" : "Add Meal"}
         </Button>
       </div>
     </div>
