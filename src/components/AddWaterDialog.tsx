@@ -187,5 +187,4 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
       )}
     </>
   );
-  );
 }

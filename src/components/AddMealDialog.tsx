@@ -24,6 +24,7 @@ interface SelectedFood {
   calories: number;
   protein: number;
   carbs: number;
+  standardQuantity: string;
   fat: number;
   fiber: number;
 }
@@ -286,6 +287,5 @@ export function AddMealDialog({ onMealAdded }: AddMealDialogProps) {
         </Sheet>
       )}
     </>
-  );
   );
 }
