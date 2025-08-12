@@ -128,101 +128,104 @@ export default function WorkoutsSummary() {
           <AddWorkoutDialog onWorkoutAdded={fetchWorkouts} />
         </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          <Card className="shadow-card">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Dumbbell className="h-6 w-6 text-primary mr-2" />
-                <p className="text-2xl font-bold text-primary">{totals.workoutCount}</p>
-              </div>
-              <p className="text-sm text-muted-foreground">Workouts Completed</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Clock className="h-6 w-6 text-blue-600 mr-2" />
-                <p className="text-2xl font-bold text-blue-600">{totals.totalMinutes}</p>
-              </div>
-              <p className="text-sm text-muted-foreground">Minutes Active</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Flame className="h-6 w-6 text-orange-600 mr-2" />
-                <p className="text-2xl font-bold text-orange-600">{Math.round(totals.totalCalories)}</p>
-              </div>
-              <p className="text-sm text-muted-foreground">Calories Burned</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Workouts List */}
-        <div className="space-y-4">
-          {workouts.length === 0 ? (
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Left column: Summary metrics (stacked) */}
+          <section aria-labelledby="workouts-metrics" className="space-y-4">
+            <h2 id="workouts-metrics" className="sr-only">Today's Workout Metrics</h2>
             <Card className="shadow-card">
-              <CardContent className="p-8 text-center">
-                <Dumbbell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No workouts logged today</h3>
-                <p className="text-muted-foreground mb-4">Start your fitness journey by logging your first workout.</p>
-                <AddWorkoutDialog onWorkoutAdded={fetchWorkouts} />
+              <CardContent className="p-6">
+                <div className="flex items-center mb-1">
+                  <Dumbbell className="h-5 w-5 text-primary mr-2" />
+                  <p className="text-2xl font-bold text-primary">{totals.workoutCount}</p>
+                </div>
+                <p className="text-sm text-muted-foreground">Workouts Completed</p>
               </CardContent>
             </Card>
-          ) : (
-            workouts.map((workout) => (
-              <Card key={workout.id} className="shadow-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <CardTitle className="text-lg">{workout.name}</CardTitle>
-                      <Badge variant="outline" className={getWorkoutTypeColor(workout.type)}>
-                        {workout.type}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-muted-foreground">
-                        {formatTime(workout.logged_at)}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteWorkout(workout.id)}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                    <div className="flex items-center">
-                      <Clock className="h-4 w-4 text-muted-foreground mr-2" />
-                      <div>
-                        <p className="font-semibold">{workout.duration_minutes} minutes</p>
-                        <p className="text-muted-foreground">Duration</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <Flame className="h-4 w-4 text-muted-foreground mr-2" />
-                      <div>
-                        <p className="font-semibold">{workout.calories_burned} cal</p>
-                        <p className="text-muted-foreground">Calories Burned</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {workout.notes && (
-                    <div className="mt-3 p-3 bg-muted/50 rounded-lg">
-                      <p className="text-sm text-muted-foreground italic">"{workout.notes}"</p>
-                    </div>
-                  )}
+            <Card className="shadow-card">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-1">
+                  <Clock className="h-5 w-5 text-blue-600 mr-2" />
+                  <p className="text-2xl font-bold text-blue-600">{totals.totalMinutes}</p>
+                </div>
+                <p className="text-sm text-muted-foreground">Minutes Active</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-card">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-1">
+                  <Flame className="h-5 w-5 text-orange-600 mr-2" />
+                  <p className="text-2xl font-bold text-orange-600">{Math.round(totals.totalCalories)}</p>
+                </div>
+                <p className="text-sm text-muted-foreground">Calories Burned</p>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* Right column: Workouts list (stacked) */}
+          <section aria-labelledby="workouts-list" className="space-y-4">
+            <h2 id="workouts-list" className="sr-only">Logged Workouts</h2>
+            {workouts.length === 0 ? (
+              <Card className="shadow-card">
+                <CardContent className="p-8 text-center">
+                  <Dumbbell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No workouts logged today</h3>
+                  <p className="text-muted-foreground mb-4">Start your fitness journey by logging your first workout.</p>
+                  <AddWorkoutDialog onWorkoutAdded={fetchWorkouts} />
                 </CardContent>
               </Card>
-            ))
-          )}
+            ) : (
+              workouts.map((workout) => (
+                <Card key={workout.id} className="shadow-card">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <CardTitle className="text-lg">{workout.name}</CardTitle>
+                        <Badge variant="outline" className={getWorkoutTypeColor(workout.type)}>
+                          {workout.type}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground">
+                          {formatTime(workout.logged_at)}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteWorkout(workout.id)}
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 text-muted-foreground mr-2" />
+                        <div>
+                          <p className="font-semibold">{workout.duration_minutes} minutes</p>
+                          <p className="text-muted-foreground">Duration</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <Flame className="h-4 w-4 text-muted-foreground mr-2" />
+                        <div>
+                          <p className="font-semibold">{workout.calories_burned} cal</p>
+                          <p className="text-muted-foreground">Calories Burned</p>
+                        </div>
+                      </div>
+                    </div>
+                    {workout.notes && (
+                      <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground italic">"{workout.notes}"</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </section>
         </div>
       </div>
     </div>

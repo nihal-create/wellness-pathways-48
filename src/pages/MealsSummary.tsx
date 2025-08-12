@@ -124,114 +124,118 @@ export default function MealsSummary() {
           <AddMealDialog onMealAdded={fetchMeals} />
         </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <Card className="shadow-card">
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-primary">{Math.round(totals.calories)}</p>
-              <p className="text-sm text-muted-foreground">Calories</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card">
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">{Math.round(totals.protein)}g</p>
-              <p className="text-sm text-muted-foreground">Protein</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card">
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-yellow-600">{Math.round(totals.carbs)}g</p>
-              <p className="text-sm text-muted-foreground">Carbs</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card">
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-red-600">{Math.round(totals.fat)}g</p>
-              <p className="text-sm text-muted-foreground">Fat</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card">
-            <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-green-600">{Math.round(totals.fiber)}g</p>
-              <p className="text-sm text-muted-foreground">Fiber</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Meals List */}
-        <div className="space-y-4">
-          {meals.length === 0 ? (
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Left column: Summary metrics (stacked) */}
+          <section aria-labelledby="meals-metrics" className="space-y-4">
+            <h2 id="meals-metrics" className="sr-only">Today's Meal Metrics</h2>
             <Card className="shadow-card">
-              <CardContent className="p-8 text-center">
-                <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No meals logged today</h3>
-                <p className="text-muted-foreground mb-4">Start tracking your nutrition by adding your first meal.</p>
-                <AddMealDialog onMealAdded={fetchMeals} />
+              <CardContent className="p-4">
+                <p className="text-2xl font-bold text-primary">{Math.round(totals.calories)}</p>
+                <p className="text-sm text-muted-foreground">Calories</p>
               </CardContent>
             </Card>
-          ) : (
-            meals.map((meal) => (
-              <Card key={meal.id} className="shadow-card">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <CardTitle className="text-lg">{meal.name}</CardTitle>
-                      {meal.meal_type && (
-                        <Badge variant="outline" className={getMealTypeColor(meal.meal_type)}>
-                          {meal.meal_type}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-muted-foreground">
-                        {formatTime(meal.logged_at)}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteMeal(meal.id)}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 text-sm">
-                    <div>
-                      <p className="font-semibold">{meal.calories}</p>
-                      <p className="text-muted-foreground">Calories</p>
-                    </div>
-                    {meal.protein !== null && (
-                      <div>
-                        <p className="font-semibold">{meal.protein}g</p>
-                        <p className="text-muted-foreground">Protein</p>
-                      </div>
-                    )}
-                    {meal.carbs !== null && (
-                      <div>
-                        <p className="font-semibold">{meal.carbs}g</p>
-                        <p className="text-muted-foreground">Carbs</p>
-                      </div>
-                    )}
-                    {meal.fat !== null && (
-                      <div>
-                        <p className="font-semibold">{meal.fat}g</p>
-                        <p className="text-muted-foreground">Fat</p>
-                      </div>
-                    )}
-                    {meal.fiber !== null && (
-                      <div>
-                        <p className="font-semibold">{meal.fiber}g</p>
-                        <p className="text-muted-foreground">Fiber</p>
-                      </div>
-                    )}
-                  </div>
+            <Card className="shadow-card">
+              <CardContent className="p-4">
+                <p className="text-2xl font-bold text-blue-600">{Math.round(totals.protein)}g</p>
+                <p className="text-sm text-muted-foreground">Protein</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-card">
+              <CardContent className="p-4">
+                <p className="text-2xl font-bold text-yellow-600">{Math.round(totals.carbs)}g</p>
+                <p className="text-sm text-muted-foreground">Carbs</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-card">
+              <CardContent className="p-4">
+                <p className="text-2xl font-bold text-red-600">{Math.round(totals.fat)}g</p>
+                <p className="text-sm text-muted-foreground">Fat</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-card">
+              <CardContent className="p-4">
+                <p className="text-2xl font-bold text-green-600">{Math.round(totals.fiber)}g</p>
+                <p className="text-sm text-muted-foreground">Fiber</p>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* Right column: Meals list (stacked) */}
+          <section aria-labelledby="meals-list" className="space-y-4">
+            <h2 id="meals-list" className="sr-only">Logged Meals</h2>
+            {meals.length === 0 ? (
+              <Card className="shadow-card">
+                <CardContent className="p-8 text-center">
+                  <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No meals logged today</h3>
+                  <p className="text-muted-foreground mb-4">Start tracking your nutrition by adding your first meal.</p>
+                  <AddMealDialog onMealAdded={fetchMeals} />
                 </CardContent>
               </Card>
-            ))
-          )}
+            ) : (
+              meals.map((meal) => (
+                <Card key={meal.id} className="shadow-card">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <CardTitle className="text-lg">{meal.name}</CardTitle>
+                        {meal.meal_type && (
+                          <Badge variant="outline" className={getMealTypeColor(meal.meal_type)}>
+                            {meal.meal_type}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground">
+                          {formatTime(meal.logged_at)}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteMeal(meal.id)}
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 text-sm">
+                      <div>
+                        <p className="font-semibold">{meal.calories}</p>
+                        <p className="text-muted-foreground">Calories</p>
+                      </div>
+                      {meal.protein !== null && (
+                        <div>
+                          <p className="font-semibold">{meal.protein}g</p>
+                          <p className="text-muted-foreground">Protein</p>
+                        </div>
+                      )}
+                      {meal.carbs !== null && (
+                        <div>
+                          <p className="font-semibold">{meal.carbs}g</p>
+                          <p className="text-muted-foreground">Carbs</p>
+                        </div>
+                      )}
+                      {meal.fat !== null && (
+                        <div>
+                          <p className="font-semibold">{meal.fat}g</p>
+                          <p className="text-muted-foreground">Fat</p>
+                        </div>
+                      )}
+                      {meal.fiber !== null && (
+                        <div>
+                          <p className="font-semibold">{meal.fiber}g</p>
+                          <p className="text-muted-foreground">Fiber</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </section>
         </div>
       </div>
     </div>
