@@ -100,9 +100,9 @@ export default function MealsSummary() {
               {/* Back */}
             </Button>
             <div className="flex items-center space-x-2">
-              {/* <div className="p-2 rounded-full bg-wellness-nutrition">
+              <div className="p-2 rounded-full bg-wellness-nutrition">
                 <Utensils className="h-5 w-5 text-green-600" />
-              </div> */}
+              </div>
               <h1 className="text-2xl font-bold">Today's Meals</h1>
             </div>
           </div>
