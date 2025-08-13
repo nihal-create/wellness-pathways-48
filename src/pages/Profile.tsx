@@ -138,6 +138,8 @@ export default function Profile() {
 
   const handleSignOut = async () => {
     await signOut();
+    navigate('/auth');
+    toast({ title: "Signed out", description: "You have been signed out." });
   };
 
   if (profileLoading) {

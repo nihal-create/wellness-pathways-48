@@ -133,7 +133,7 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
                     <Input id="glasses" type="number" value={glasses} onChange={(e) => setGlasses(e.target.value)} placeholder="1" required min="1" max="20" />
                   </div>
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={loading}>{loading ? "Adding..." : "Add Water"}</Button>
+                    <Button type="submit" disabled={loading} className="w-full sm:w-auto">{loading ? "Adding..." : "Add Water"}</Button>
                   </div>
                 </form>
               </div>
@@ -177,7 +177,7 @@ export function AddWaterDialog({ onWaterAdded }: AddWaterDialogProps) {
                     <Input id="glasses" type="number" value={glasses} onChange={(e) => setGlasses(e.target.value)} placeholder="1" required min="1" max="20" />
                   </div>
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={loading}>{loading ? "Adding..." : "Add Water"}</Button>
+                    <Button type="submit" disabled={loading} className="w-full sm:w-auto">{loading ? "Adding..." : "Add Water"}</Button>
                   </div>
                 </form>
               </div>

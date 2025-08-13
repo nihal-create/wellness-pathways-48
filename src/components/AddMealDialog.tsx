@@ -222,11 +222,11 @@ export function AddMealDialog({ onMealAdded }: AddMealDialogProps) {
                     </Card>
                   )}
 
-                  <div className="flex justify-end">
-                    <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0}>
-                      {loading ? "Adding..." : "Add Meal"}
-                    </Button>
-                  </div>
+                   <div className="flex justify-end">
+                     <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0} className="w-full sm:w-auto">
+                       {loading ? "Adding..." : "Add Meal"}
+                     </Button>
+                   </div>
                 </div>
               </div>
             </div>
@@ -278,9 +278,9 @@ export function AddMealDialog({ onMealAdded }: AddMealDialogProps) {
                   </Card>
                 )}
 
-                <div className="flex justify-end">
-                  <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0}>{loading ? "Adding..." : "Add Meal"}</Button>
-                </div>
+                 <div className="flex justify-end">
+                   <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0} className="w-full sm:w-auto">{loading ? "Adding..." : "Add Meal"}</Button>
+                 </div>
               </div>
             </div>
           </SheetContent>
