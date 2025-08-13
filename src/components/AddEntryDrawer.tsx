@@ -264,7 +264,7 @@ function WaterForm({
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="flex-1 flex flex-col space-y-4 justify-between">
                 <div className="space-y-2">
                     <Label htmlFor="glasses">Number of Glasses *</Label>
                     <Input
