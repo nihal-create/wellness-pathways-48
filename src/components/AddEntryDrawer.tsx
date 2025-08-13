@@ -307,7 +307,7 @@ function MeditationForm({
     const [meditationData, setMeditationData] = useState({
         duration_minutes: "",
         type: "mindfulness",
-        notes: "",
+        // notes: "",
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -318,7 +318,7 @@ function MeditationForm({
             user_id: user.id,
             duration_minutes: parseInt(meditationData.duration_minutes),
             type: meditationData.type,
-            notes: meditationData.notes || null,
+            // notes: meditationData.notes || null,
             logged_at: new Date().toISOString(),
         });
         setLoading(false);
@@ -387,7 +387,7 @@ function MeditationForm({
                     </SelectContent>
                 </Select>
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
                 <Label htmlFor="med-notes">Notes (optional)</Label>
                 <Textarea
                     id="med-notes"
@@ -401,8 +401,8 @@ function MeditationForm({
                     rows={3}
                     placeholder="How was your session? Any insights?"
                 />
-            </div>
-            <div className="flex justify-end gap-2">
+            </div> */}
+            <div className="flex justify-end">
                 <Button
                     type="submit"
                     disabled={loading}
