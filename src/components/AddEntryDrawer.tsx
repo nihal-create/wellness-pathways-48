@@ -611,7 +611,7 @@ function WorkoutForm({
 
             <form
                 onSubmit={handleSubmit}
-                className="flex-1 flex flex-col space-y-4"
+                className="flex-1 flex flex-col space-y-4 justify-between"
             >
                 {/* <div className="space-y-2">
             <Label htmlFor="workout-name">Custom Name (optional)</Label>
@@ -868,9 +868,9 @@ function MealForm({
             </div>
 
             <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-                <div className="space-y-2 flex-1 overflow-y-auto p-1">
-                    {searchQuery &&
-                        filteredFoods.map((food) => (
+                {searchQuery && (
+                    <div className="space-y-2 flex-1 overflow-y-auto p-1">
+                        {filteredFoods.map((food) => (
                             <Card
                                 key={food.id}
                                 className="cursor-pointer transition-colors hover:bg-accent/50 w-full"
@@ -897,13 +897,14 @@ function MealForm({
                                 </CardContent>
                             </Card>
                         ))}
-                    {searchQuery && filteredFoods.length === 0 && (
-                        <p className="text-center text-muted-foreground py-6">
-                            No foods found
-                        </p>
-                    )}
-                    {/* {!searchQuery && <p className="text-center text-muted-foreground py-6">Start typing to search for foods...</p>} */}
-                </div>
+                        {filteredFoods.length === 0 && (
+                            <p className="text-center text-muted-foreground py-6">
+                                No foods found
+                            </p>
+                        )}
+                        {/* {!searchQuery && <p className="text-center text-muted-foreground py-6">Start typing to search for foods...</p>} */}
+                    </div>
+                )}
 
                 <div className="space-y-3 flex-1 overflow-y-auto">
                     {/* <h3 className="font-medium">Selected Foods</h3> */}
