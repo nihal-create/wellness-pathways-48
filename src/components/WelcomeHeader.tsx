@@ -21,11 +21,11 @@ export function WelcomeHeader({ profile }: WelcomeHeaderProps) {
             Let's make today healthier together
           </p>
         </div>
-        <div className="animate-gentle-bounce">
+        {/* <div className="animate-gentle-bounce">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-soft">
             <span className="text-xl">🏃‍♂️</span>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
