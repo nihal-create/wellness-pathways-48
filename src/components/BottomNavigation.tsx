@@ -17,6 +17,7 @@ export function BottomNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  if (location.pathname.startsWith('/onboarding')) return null;
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50">
       <div className="grid grid-cols-4 h-16">

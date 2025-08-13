@@ -109,7 +109,7 @@ export function AddMeditationDialog({ onMeditationAdded }: AddMeditationDialogPr
                   <Textarea id="meditation-notes" value={meditationData.notes} onChange={(e) => setMeditationData({ ...meditationData, notes: e.target.value })} placeholder="How was your session? Any insights?" rows={3} />
                 </div>
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={loading}>{loading ? "Logging..." : "Log Session"}</Button>
+                  <Button type="submit" disabled={loading} className="w-full sm:w-auto">{loading ? "Logging..." : "Log Session"}</Button>
                 </div>
               </form>
             </div>
@@ -149,9 +149,9 @@ export function AddMeditationDialog({ onMeditationAdded }: AddMeditationDialogPr
                   <Label htmlFor="meditation-notes">Notes (optional)</Label>
                   <Textarea id="meditation-notes" value={meditationData.notes} onChange={(e) => setMeditationData({ ...meditationData, notes: e.target.value })} placeholder="How was your session? Any insights?" rows={3} />
                 </div>
-                <div className="flex justify-end">
-                  <Button type="submit" disabled={loading}>{loading ? "Logging..." : "Log Session"}</Button>
-                </div>
+                 <div className="flex justify-end">
+                   <Button type="submit" disabled={loading} className="w-full sm:w-auto">{loading ? "Logging..." : "Log Session"}</Button>
+                 </div>
               </form>
             </div>
           </SheetContent>

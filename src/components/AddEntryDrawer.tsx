@@ -203,7 +203,7 @@ function WaterForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => v
           />
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleSubmit} disabled={loading || !glasses || parseInt(glasses) <= 0}>
+          <Button onClick={handleSubmit} disabled={loading || !glasses || parseInt(glasses) <= 0} className="w-full sm:w-auto">
             {loading ? "Adding..." : "Add Water"}
           </Button>
         </div>
@@ -281,7 +281,7 @@ function MeditationForm({ onClose, onAdded }: { onClose: () => void; onAdded: ()
         />
       </div>
       <div className="flex justify-end gap-2">
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading} className="w-full sm:w-auto">
           {loading ? "Logging..." : "Log Session"}
         </Button>
       </div>
@@ -449,7 +449,7 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
             </Card>
           )}
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes} className="flex-none">
+            <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes} className="w-full sm:w-auto">
               {loading ? (editWorkout ? "Updating..." : "Logging...") : editWorkout ? "Update Workout" : "Log Workout"}
             </Button>
           </div>
@@ -662,7 +662,7 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
       </Card> */}
 
       <div className="flex justify-end gap-2">
-        <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0}>
+        <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0} className="w-full sm:w-auto">
           {loading ? (editMeal ? "Updating..." : "Adding...") : editMeal ? "Update Meal" : "Add Meal"}
         </Button>
       </div>

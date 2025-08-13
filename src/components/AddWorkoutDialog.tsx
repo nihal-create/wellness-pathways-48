@@ -136,9 +136,9 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
                         <p className="text-xs text-muted-foreground">Based on {selectedWorkout.caloriesPerMinute} cal/min × {workoutData.duration_minutes} min</p>
                       </Card>
                     )}
-                    <div className="flex justify-end">
-                      <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes}>{loading ? "Logging..." : "Log Workout"}</Button>
-                    </div>
+                     <div className="flex justify-end">
+                       <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes} className="w-full sm:w-auto">{loading ? "Logging..." : "Log Workout"}</Button>
+                     </div>
                   </form>
                 )}
               </div>
@@ -193,9 +193,9 @@ export function AddWorkoutDialog({ onWorkoutAdded }: AddWorkoutDialogProps) {
                         <p className="text-xs text-muted-foreground">Based on {selectedWorkout.caloriesPerMinute} cal/min × {workoutData.duration_minutes} min</p>
                       </Card>
                     )}
-                    <div className="flex justify-end">
-                      <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes}>{loading ? "Logging..." : "Log Workout"}</Button>
-                    </div>
+                     <div className="flex justify-end">
+                       <Button type="submit" disabled={loading || !workoutData.type || !workoutData.duration_minutes} className="w-full sm:w-auto">{loading ? "Logging..." : "Log Workout"}</Button>
+                     </div>
                   </form>
                 )}
               </div>
