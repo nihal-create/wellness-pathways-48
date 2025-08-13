@@ -74,7 +74,7 @@ export function AddEntryDrawer({
         : SheetTitle;
     const Content = ({ children }: { children: ReactNode }) =>
         isMobile ? (
-            <DrawerContent className="p-0 min-h-[40vh]">
+            <DrawerContent className="p-0 min-h-[40vh] flex flex-col">
                 {children}
             </DrawerContent>
         ) : (
@@ -97,11 +97,11 @@ export function AddEntryDrawer({
                     </Title>
                 </Header>
 
-                <div className="p-4">
+                <div className="p-4 flex-1 flex flex-col">
                     {mode === "select" ? (
                         <SelectGrid onPick={(m) => setMode(m)} />
                     ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-4 flex-1 flex flex-col">
                             {/* <Button variant="ghost" size="sm" onClick={() => setMode("select")}>Back</Button> */}
                             {mode === "water" && (
                                 <WaterForm
@@ -227,7 +227,7 @@ function WaterForm({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex-1 flex flex-col space-y-4">
             <div>
                 <Label className="text-sm font-medium">Quick Add</Label>
                 <div className="flex gap-2 mt-2">
@@ -338,7 +338,10 @@ function MeditationForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+            onSubmit={handleSubmit}
+            className="flex-1 flex flex-col space-y-4"
+        >
             <div className="space-y-2">
                 <Label htmlFor="med-duration">Duration (minutes) *</Label>
                 <Input
@@ -513,13 +516,13 @@ function WorkoutForm({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex-1 flex flex-col space-y-4">
             {!workoutData.type && (
                 <>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                         <Input
-                            // placeholder="Search workouts..."
+                            placeholder="Search workouts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10"
@@ -606,7 +609,10 @@ function WorkoutForm({
                 </Card>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+                onSubmit={handleSubmit}
+                className="flex-1 flex flex-col space-y-4"
+            >
                 {/* <div className="space-y-2">
             <Label htmlFor="workout-name">Custom Name (optional)</Label>
             <Input
@@ -653,7 +659,7 @@ function WorkoutForm({
                     </>
                 )}
 
-                <div className="flex justify-end gap-2 pt-2">
+                <div className="flex justify-end gap-2 mt-auto">
                     <Button
                         type="submit"
                         disabled={
@@ -850,115 +856,119 @@ function MealForm({
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex-1 flex flex-col space-y-4">
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                    // placeholder="Search Indian foods..."
+                    placeholder="Search Indian foods..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
                 />
             </div>
 
-            <div className="space-y-2 max-h-56 overflow-y-auto p-1">
-                {searchQuery &&
-                    filteredFoods.map((food) => (
-                        <Card
-                            key={food.id}
-                            className="cursor-pointer transition-colors hover:bg-accent/50 w-full"
-                            onClick={() => addFood(food)}
-                        >
-                            <CardContent className="p-3">
-                                <div className="flex justify-between items-start gap-2 min-w-0">
-                                    <div className="flex-1 min-w-0 overflow-hidden">
-                                        <h4 className="font-medium text-sm truncate">
+            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+                <div className="space-y-2 flex-1 overflow-y-auto p-1">
+                    {searchQuery &&
+                        filteredFoods.map((food) => (
+                            <Card
+                                key={food.id}
+                                className="cursor-pointer transition-colors hover:bg-accent/50 w-full"
+                                onClick={() => addFood(food)}
+                            >
+                                <CardContent className="p-3">
+                                    <div className="flex justify-between items-start gap-2 min-w-0">
+                                        <div className="flex-1 min-w-0 overflow-hidden">
+                                            <h4 className="font-medium text-sm truncate">
+                                                {food.name}
+                                            </h4>
+                                            <p className="text-xs text-muted-foreground">
+                                                {food.calories} cal •{" "}
+                                                {food.protein}g protein
+                                            </p>
+                                        </div>
+                                        <Badge
+                                            variant="outline"
+                                            className="text-xs shrink-0"
+                                        >
+                                            {food.standardQuantity}
+                                        </Badge>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    {searchQuery && filteredFoods.length === 0 && (
+                        <p className="text-center text-muted-foreground py-6">
+                            No foods found
+                        </p>
+                    )}
+                    {/* {!searchQuery && <p className="text-center text-muted-foreground py-6">Start typing to search for foods...</p>} */}
+                </div>
+
+                <div className="space-y-3 flex-1 overflow-y-auto">
+                    {/* <h3 className="font-medium">Selected Foods</h3> */}
+                    <div className="space-y-2">
+                        {selectedFoods.map((food) => (
+                            <Card key={food.id} className="p-3 w-full">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-start gap-2 min-w-0">
+                                        <h4 className="font-medium text-sm flex-1 min-w-0 truncate">
                                             {food.name}
                                         </h4>
-                                        <p className="text-xs text-muted-foreground">
-                                            {food.calories} cal • {food.protein}
-                                            g protein
-                                        </p>
+                                        <Badge
+                                            variant="outline"
+                                            className="text-xs shrink-0"
+                                        >
+                                            {food.standardQuantity}
+                                        </Badge>
+
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            className="h-6 w-6 p-0 shrink-0"
+                                            onClick={() =>
+                                                updateQty(food.id, 0)
+                                            }
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </Button>
                                     </div>
-                                    <Badge
-                                        variant="outline"
-                                        className="text-xs shrink-0"
-                                    >
-                                        {food.standardQuantity}
-                                    </Badge>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="h-6 w-6 p-0"
+                                            onClick={() =>
+                                                updateQty(
+                                                    food.id,
+                                                    food.quantity - 1
+                                                )
+                                            }
+                                        >
+                                            -
+                                        </Button>
+                                        <span className="text-sm w-8 text-center">
+                                            {food.quantity}
+                                        </span>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="h-6 w-6 p-0"
+                                            onClick={() =>
+                                                updateQty(
+                                                    food.id,
+                                                    food.quantity + 1
+                                                )
+                                            }
+                                        >
+                                            +
+                                        </Button>
+                                    </div>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                {searchQuery && filteredFoods.length === 0 && (
-                    <p className="text-center text-muted-foreground py-6">
-                        No foods found
-                    </p>
-                )}
-                {/* {!searchQuery && <p className="text-center text-muted-foreground py-6">Start typing to search for foods...</p>} */}
-            </div>
-
-            <div className="space-y-3">
-                {/* <h3 className="font-medium">Selected Foods</h3> */}
-                <div className="space-y-2">
-                    {selectedFoods.map((food) => (
-                        <Card key={food.id} className="p-3 w-full">
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-start gap-2 min-w-0">
-                                    <h4 className="font-medium text-sm flex-1 min-w-0 truncate">
-                                        {food.name}
-                                    </h4>
-                                    <Badge
-                                        variant="outline"
-                                        className="text-xs shrink-0"
-                                    >
-                                        {food.standardQuantity}
-                                    </Badge>
-
-                                    <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        className="h-6 w-6 p-0 shrink-0"
-                                        onClick={() => updateQty(food.id, 0)}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </Button>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="h-6 w-6 p-0"
-                                        onClick={() =>
-                                            updateQty(
-                                                food.id,
-                                                food.quantity - 1
-                                            )
-                                        }
-                                    >
-                                        -
-                                    </Button>
-                                    <span className="text-sm w-8 text-center">
-                                        {food.quantity}
-                                    </span>
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="h-6 w-6 p-0"
-                                        onClick={() =>
-                                            updateQty(
-                                                food.id,
-                                                food.quantity + 1
-                                            )
-                                        }
-                                    >
-                                        +
-                                    </Button>
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-                    {/* {selectedFoods.length === 0 && <p className="text-xs text-muted-foreground">No foods selected yet.</p>} */}
+                            </Card>
+                        ))}
+                        {/* {selectedFoods.length === 0 && <p className="text-xs text-muted-foreground">No foods selected yet.</p>} */}
+                    </div>
                 </div>
             </div>
 
