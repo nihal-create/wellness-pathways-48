@@ -1,0 +1,13 @@
+[data-vaul-drawer][data-vaul-drawer-direction="bottom"]::after {
+    content: none !important;
+}
+
+[data-vaul-drawer]:not([data-vaul-custom-container="true"])::after {
+    content: none !important;
+}
+
+/* Ensure no global ::after styles interfere */
+::before,
+::after {
+    content: none !important;
+}

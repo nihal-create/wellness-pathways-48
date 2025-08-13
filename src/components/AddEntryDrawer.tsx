@@ -33,6 +33,7 @@ import { indianFoods } from "@/data/indianFoods";
 import { workoutTypes } from "@/data/workouts";
 import { useNavigate } from "react-router-dom";
 import type { Meal, Workout } from "@/hooks/useTrackerData";
+import "./AddEntryDrawer.css";
 
 interface AddEntryDrawerProps {
     open: boolean;
@@ -74,7 +75,7 @@ export function AddEntryDrawer({
         : SheetTitle;
     const Content = ({ children }: { children: ReactNode }) =>
         isMobile ? (
-            <DrawerContent className="p-0 min-h-[40vh] flex flex-col">
+            <DrawerContent className="p-0 min-h-[40vh] max-h-[70vh] flex flex-col overflow-y-auto">
                 {children}
             </DrawerContent>
         ) : (
@@ -869,7 +870,7 @@ function MealForm({
 
             <div className="flex-1 flex flex-col gap-4 overflow-hidden">
                 {searchQuery && (
-                    <div className="space-y-2 flex-1 overflow-y-auto p-1">
+                    <div className="space-y-2 flex-1 overflow-y-auto p-1 max-h-48">
                         {filteredFoods.map((food) => (
                             <Card
                                 key={food.id}
