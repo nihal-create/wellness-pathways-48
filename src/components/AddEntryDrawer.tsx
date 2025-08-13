@@ -49,7 +49,7 @@ export function AddEntryDrawer({ open, onOpenChange, onAnyAdded, startMode, edit
   const Title: typeof DrawerTitle | typeof SheetTitle = isMobile ? DrawerTitle : SheetTitle;
   const Content = ({ children }: { children: ReactNode }) =>
     isMobile ? (
-      <DrawerContent className="p-0">{children}</DrawerContent>
+      <DrawerContent className="p-0 min-h-[40vh]">{children}</DrawerContent>
     ) : (
       <SheetContent side="right" className="w-full sm:max-w-md">
         {children}
@@ -358,64 +358,77 @@ function WorkoutForm({ onClose, onAdded, editWorkout }: { onClose: () => void; o
 
   return (
     <div className="space-y-4">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input
-          placeholder="Search workouts..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+      {!workoutData.type && (
+        <>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              // placeholder="Search workouts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
 
-      <div className="max-h-48 overflow-y-auto space-y-2 p-1">
-        {/* Show currently selected workout when editing */}
-        {editWorkout && workoutData.type && !searchQuery && (
-          <Card className="ring-2 ring-primary bg-accent w-full">
-            <CardContent className="p-3">
-              <div className="flex justify-between items-start gap-2 min-w-0">
-                <div className="flex-1 min-w-0 overflow-hidden">
-                  <h4 className="font-medium text-sm truncate">{selectedWorkout?.name}</h4>
-                  <p className="text-xs text-muted-foreground">{selectedWorkout?.caloriesPerMinute} cal/min</p>
-                </div>
-                <Badge variant="outline" className="text-xs shrink-0">
+          <div className="max-h-48 overflow-y-auto space-y-2 p-1">
+            {searchQuery &&
+              filteredWorkouts.map((workout) => (
+                <Card
+                  key={workout.id}
+                  className="cursor-pointer transition-colors w-full hover:bg-accent/50"
+                  onClick={() => {
+                    setWorkoutData({ ...workoutData, type: workout.name });
+                    setSearchQuery("");
+                  }}
+                >
+                  <CardContent className="p-3">
+                    <div className="flex justify-between items-start gap-2 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <h4 className="font-medium text-sm truncate">{workout.name}</h4>
+                        <p className="text-xs text-muted-foreground">{workout.caloriesPerMinute} cal/min</p>
+                      </div>
+                      <Badge variant="outline" className="text-xs shrink-0">
+                        {workout.category}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            {searchQuery && filteredWorkouts.length === 0 && (
+              <p className="text-center text-muted-foreground py-4">No workouts found</p>
+            )}
+          </div>
+        </>
+      )}
+
+      {workoutData.type && (
+        <Card className="ring-2 ring-primary bg-accent w-full">
+          <CardContent className="p-3">
+            <div className="flex justify-between items-start gap-2 min-w-0">
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <h4 className="font-medium text-sm truncate">{selectedWorkout?.name}</h4>
+                <p className="text-xs text-muted-foreground">{selectedWorkout?.caloriesPerMinute} cal/min</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant="outline" className="text-xs">
                   {selectedWorkout?.category}
                 </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setWorkoutData({ ...workoutData, type: "" });
+                    setSearchQuery("");
+                  }}
+                  className="h-6 w-6 p-0"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
-        
-        {searchQuery &&
-          filteredWorkouts.map((workout) => (
-            <Card
-              key={workout.id}
-              className={`cursor-pointer transition-colors w-full ${workoutData.type === workout.name ? "ring-2 ring-primary bg-accent" : "hover:bg-accent/50"}`}
-              onClick={() => setWorkoutData({ ...workoutData, type: workout.name })}
-            >
-              <CardContent className="p-3">
-                <div className="flex justify-between items-start gap-2 min-w-0">
-                  <div className="flex-1 min-w-0 overflow-hidden">
-                    <h4 className="font-medium text-sm truncate">{workout.name}</h4>
-                    <p className="text-xs text-muted-foreground">{workout.caloriesPerMinute} cal/min</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs shrink-0">
-                    {workout.category}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        {searchQuery && filteredWorkouts.length === 0 && (
-          <p className="text-center text-muted-foreground py-4">No workouts found</p>
-        )}
-        {!searchQuery && !editWorkout && (
-          <p className="text-center text-muted-foreground py-4">Start typing to search for workouts...</p>
-        )}
-        {!searchQuery && editWorkout && !workoutData.type && (
-          <p className="text-center text-muted-foreground py-4">Search to change workout type...</p>
-        )}
-      </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {workoutData.type && (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -598,7 +611,7 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Search Indian foods..."
+          // placeholder="Search Indian foods..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -623,11 +636,11 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
         {searchQuery && filteredFoods.length === 0 && (
           <p className="text-center text-muted-foreground py-6">No foods found</p>
         )}
-        {!searchQuery && <p className="text-center text-muted-foreground py-6">Start typing to search for foods...</p>}
+        {/* {!searchQuery && <p className="text-center text-muted-foreground py-6">Start typing to search for foods...</p>} */}
       </div>
 
       <div className="space-y-3">
-        <h3 className="font-medium">Selected Foods</h3>
+        {/* <h3 className="font-medium">Selected Foods</h3> */}
         <div className="space-y-2">
           {selectedFoods.map((food) => (
             <Card key={food.id} className="p-3 w-full">
@@ -652,7 +665,7 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
               </div>
             </Card>
           ))}
-          {selectedFoods.length === 0 && <p className="text-xs text-muted-foreground">No foods selected yet.</p>}
+          {/* {selectedFoods.length === 0 && <p className="text-xs text-muted-foreground">No foods selected yet.</p>} */}
         </div>
       </div>
 
@@ -661,11 +674,13 @@ function MealForm({ onClose, onAdded, editMeal }: { onClose: () => void; onAdded
         <p className="text-xs text-muted-foreground">Calories: {Math.round(totals.calories)} • Protein: {Math.round(totals.protein)}g • Carbs: {Math.round(totals.carbs)}g • Fat: {Math.round(totals.fat)}g • Fiber: {Math.round(totals.fiber)}g</p>
       </Card> */}
 
+     {
+      selectedFoods.length > 0 && (
       <div className="flex justify-end gap-2">
         <Button onClick={handleSubmit} disabled={loading || selectedFoods.length === 0} className="w-full sm:w-auto">
           {loading ? (editMeal ? "Updating..." : "Adding...") : editMeal ? "Update Meal" : "Add Meal"}
         </Button>
-      </div>
+      </div>)}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Profile } from "@/hooks/useProfile";
 
 interface WelcomeHeaderProps {
@@ -10,8 +11,12 @@ export function WelcomeHeader({ profile }: WelcomeHeaderProps) {
   
   const displayName = profile?.display_name || "there";
 
+  const isMobile = useIsMobile();
+
   return (
-    <div className="bg-gradient-hero p-4 md:p-6 rounded-2xl shadow-soft mb-4 md:mb-6">
+    <div className="bg-gradient-hero p-4 md:p-6 rounded-2xl shadow-soft mb-4 md:mb-6" style={{
+      width: isMobile ? "100%" : "auto"
+    }}   >
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground mb-1">
@@ -21,11 +26,11 @@ export function WelcomeHeader({ profile }: WelcomeHeaderProps) {
             Let's make today healthier together
           </p>
         </div>
-        <div className="animate-gentle-bounce">
+        {/* <div className="animate-gentle-bounce">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-soft">
             <span className="text-xl">🏃‍♂️</span>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

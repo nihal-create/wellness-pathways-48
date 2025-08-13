@@ -98,9 +98,9 @@ export default function WorkoutsSummary() {
               {/* Back */}
             </Button>
             <div className="flex items-center space-x-2">
-              <div className="p-2 rounded-full bg-wellness-fitness">
+              {/* <div className="p-2 rounded-full bg-wellness-fitness">
                 <Dumbbell className="h-5 w-5 text-pink-600" />
-              </div>
+              </div> */}
               <h1 className="text-2xl font-bold">Today's Workouts</h1>
             </div>
           </div>
